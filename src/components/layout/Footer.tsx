@@ -1,5 +1,5 @@
 import Link from "next/link";
-import { ShieldCheck, Phone, Mail, MapPin, Facebook, Instagram, Linkedin, Twitter } from "lucide-react";
+import { ShieldCheck, Phone, Mail, MapPin, Facebook, Instagram, MessageCircle } from "lucide-react";
 
 export function Footer() {
     return (
@@ -25,10 +25,10 @@ export function Footer() {
                             Providing top-tier CCTV surveillance and security solutions for homes and businesses. Authorized dealers for premium global brands.
                         </p>
                         <div className="flex gap-4 pt-2">
-                            <SocialLink href="#" icon={<Facebook className="w-5 h-5" />} label="Facebook" />
-                            <SocialLink href="#" icon={<Instagram className="w-5 h-5" />} label="Instagram" />
-                            <SocialLink href="#" icon={<Twitter className="w-5 h-5" />} label="Twitter" />
-                            <SocialLink href="#" icon={<Linkedin className="w-5 h-5" />} label="LinkedIn" />
+                            <SocialLink href="https://www.facebook.com/ShriVidhata/" icon={<Facebook className="w-5 h-5" />} label="Facebook" />
+                            <SocialLink href="https://www.instagram.com/shrividhata_cctv/" icon={<Instagram className="w-5 h-5" />} label="Instagram" />
+                            <SocialLink href="mailto:contacts@shrividhta.com" icon={<Mail className="w-5 h-5" />} label="Email" />
+                            <SocialLink href="https://wa.me/918989000610" icon={<MessageCircle className="w-5 h-5" />} label="WhatsApp" />
                         </div>
                     </div>
 
@@ -86,7 +86,7 @@ export function Footer() {
                 </div>
 
                 <div className="pt-8 border-t border-slate-800 text-center text-slate-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p>© {new Date().getFullYear()} ShriVidhata Security Solutions. All rights reserved.</p>
+                    <p>© {new Date().getFullYear()} ShriVidhata Creation Services Pvt. Ltd. All rights reserved.</p>
                     <div className="flex gap-6">
                         <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
                         <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
