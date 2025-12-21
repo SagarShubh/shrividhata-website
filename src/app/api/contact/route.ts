@@ -21,7 +21,7 @@ export async function POST(request: Request) {
         const { data: emailData, error } = await resend.emails.send({
             from: "ShriVidhata Website <onboarding@resend.dev>", // Use the generic Resend address for now
             to: ["contacts@shrividhta.com"], // Sent to the business email
-            reply_to: email, // Allow replying directly to the customer
+            replyTo: email, // Allow replying directly to the customer
             subject: `New Enquiry from ${name}`,
             html: `
                 <h2>New Website Enquiry</h2>
