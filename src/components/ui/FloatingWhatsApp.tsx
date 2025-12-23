@@ -4,7 +4,7 @@ import { MessageCircle } from "lucide-react";
 import { motion } from "framer-motion";
 
 export function FloatingWhatsApp() {
-    const phoneNumber = "918989000610"; // Correct WhatsApp number
+    const phoneNumber = "918989000247"; // Updated WhatsApp number
     const message = "Hi, I am interested in ShriVidhata security solutions.";
     const whatsappUrl = `https://wa.me/${phoneNumber}?text=${encodeURIComponent(message)}`;
 

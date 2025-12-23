@@ -52,7 +52,7 @@ export function Contact() {
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-semibold text-slate-900">Phone</h3>
-                                    <p className="text-slate-600">+91 89890 04747</p>
+                                    <p className="text-slate-600">+91 89890 00247</p>
                                     <p className="text-slate-500 text-sm">Mon-Sat 9am to 6pm</p>
                                 </div>
                             </div>

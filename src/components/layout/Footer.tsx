@@ -28,7 +28,7 @@ export function Footer() {
                             <SocialLink href="https://www.facebook.com/ShriVidhata/" icon={<Facebook className="w-5 h-5" />} label="Facebook" />
                             <SocialLink href="https://www.instagram.com/shrividhata_cctv/" icon={<Instagram className="w-5 h-5" />} label="Instagram" />
                             <SocialLink href="mailto:contacts@shrividhta.com" icon={<Mail className="w-5 h-5" />} label="Email" />
-                            <SocialLink href="https://wa.me/918989000610" icon={<MessageCircle className="w-5 h-5" />} label="WhatsApp" />
+                            <SocialLink href="https://wa.me/918989000247" icon={<MessageCircle className="w-5 h-5" />} label="WhatsApp" />
                         </div>
                     </div>
 
@@ -71,8 +71,8 @@ export function Footer() {
                             </li>
                             <li className="flex items-center gap-3 text-slate-400">
                                 <Phone className="w-5 h-5 text-secondary shrink-0" />
-                                <a href="tel:+918989000610" className="hover:text-white transition-colors">
-                                    +91 89890 00610
+                                <a href="tel:+918989000247" className="hover:text-white transition-colors">
+                                    +91 89890 00247
                                 </a>
                             </li>
                             <li className="flex items-center gap-3 text-slate-400">
