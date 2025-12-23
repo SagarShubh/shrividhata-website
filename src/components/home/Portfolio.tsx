@@ -25,7 +25,7 @@ const projects = [
         title: "Retail Store Chain",
         category: "Retail",
         description: "Anti-theft camera systems installation across 5 showroom locations.",
-        image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop",
+        image: "/projects/retail-security.png",
         slug: "retail-store-chain",
     },
 ];

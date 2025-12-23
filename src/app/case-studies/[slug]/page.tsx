@@ -50,7 +50,7 @@ const caseStudies = {
     "retail-store-chain": {
         title: "Retail Store Chain",
         category: "Retail",
-        image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop",
+        image: "/projects/retail-security.png",
         description: "Anti-theft camera systems installation across 5 showroom locations with centralized loss prevention analytics.",
         problem: "Inventory shrinkage and lack of visibility into store operations across multiple cities.",
         solution: "Deployed discreet high-resolution cameras with heat mapping and people counting capabilities. Centralized all store feeds into a single dashboard for management.",
