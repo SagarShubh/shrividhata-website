@@ -36,9 +36,13 @@ export async function POST(request: Request) {
         });
 
         if (error) {
-            console.error("Resend API Error:", error);
+            console.error("Resend API Error details:", JSON.stringify(error, null, 2));
             return NextResponse.json(
-                { success: false, message: "Failed to send email via provider." },
+                {
+                    success: false,
+                    message: "Failed to send email.",
+                    error: error.message
+                },
                 { status: 500 }
             );
         }
