@@ -7,8 +7,8 @@ const brands = [
     { name: "Hikvision", logo: "/brands/hikvision.png" },
     { name: "Prama India", logo: "/brands/prama.jpg" },
     { name: "Dahua", logo: "/brands/dahua.png" },
-    { name: "CP Plus", logo: null }, // Text fallback
-    { name: "Seagate", logo: null }, // Text fallback
+    { name: "CP Plus", logo: "/brands/cpplus.png" },
+    { name: "Seagate", logo: "/brands/seagate.png" },
     { name: "Molex", logo: "/brands/molex.png" },
     { name: "Ezviz", logo: "/brands/ezviz.png" },
 ];
