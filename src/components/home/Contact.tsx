@@ -74,7 +74,7 @@ export function Contact() {
                                 </div>
                                 <div>
                                     <h3 className="text-lg font-semibold text-slate-900">Office</h3>
-                                    <p className="text-slate-600">Near SBI Udawatganj, Mangalwariya, Narsinghgarh, Distt Rajgarh, M.P. 465669</p>
+                                    <p className="text-slate-600">Shop No. 2, Near SBI Udawatganj, Mangalwariya, Narsinghgarh, Distt Rajgarh, M.P. 465669</p>
                                 </div>
                             </div>
                         </div>

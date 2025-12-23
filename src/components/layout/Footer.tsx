@@ -65,7 +65,7 @@ export function Footer() {
                             <li className="flex items-start gap-3 text-slate-400">
                                 <MapPin className="w-5 h-5 mt-0.5 text-secondary shrink-0" />
                                 <span>
-                                    Near SBI Udawatganj, Mangalwariya,<br />
+                                    Shop No. 2, Near SBI Udawatganj, Mangalwariya,<br />
                                     Narsinghgarh, Distt Rajgarh, M.P. 465669
                                 </span>
                             </li>
