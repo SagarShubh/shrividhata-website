@@ -128,6 +128,20 @@ export function Contact() {
                         )}
                     </div>
                 </div>
+
+                {/* Google Maps Embed */}
+                <div className="mt-20 w-full overflow-hidden rounded-3xl h-[400px] border border-slate-200 shadow-inner">
+                    <iframe
+                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1110.4283592383505!2d76.99192471958223!3d23.705844835841968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x397c11f77d54b8d7%3A0xe67f9509df653f88!2sMangalwariya%2C%20Narsinghgarh%2C%20Madhya%20Pradesh%20465669!5e0!3m2!1sen!2sin!4v1703318534000!5m2!1sen!2sin"
+                        width="100%"
+                        height="100%"
+                        style={{ border: 0 }}
+                        allowFullScreen
+                        loading="lazy"
+                        referrerPolicy="no-referrer-when-downgrade"
+                        title="ShriVidhata Location"
+                    ></iframe>
+                </div>
             </div>
         </section>
     );

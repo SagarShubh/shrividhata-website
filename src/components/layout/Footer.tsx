@@ -88,8 +88,8 @@ export function Footer() {
                 <div className="pt-8 border-t border-slate-800 text-center text-slate-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
                     <p>© {new Date().getFullYear()} ShriVidhata Creation Services Pvt. Ltd. All rights reserved.</p>
                     <div className="flex gap-6">
-                        <Link href="#" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="#" className="hover:text-white transition-colors">Terms of Service</Link>
+                        <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
+                        <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
                     </div>
                 </div>
             </div>
