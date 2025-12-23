@@ -21,6 +21,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
+import { FloatingCTA } from "@/components/ui/FloatingCTA";
 
 export default function RootLayout({
   children,
@@ -39,6 +40,7 @@ export default function RootLayout({
         <Footer />
         <ScrollToTop />
         <FloatingWhatsApp />
+        <FloatingCTA />
       </body>
     </html>
   );
