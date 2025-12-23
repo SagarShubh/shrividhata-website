@@ -132,7 +132,7 @@ export function Contact() {
                 {/* Google Maps Embed */}
                 <div className="mt-20 w-full overflow-hidden rounded-3xl h-[400px] border border-slate-200 shadow-inner">
                     <iframe
-                        src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d1110.4283592383505!2d76.99192471958223!3d23.705844835841968!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x397c11f77d54b8d7%3A0xe67f9509df653f88!2sMangalwariya%2C%20Narsinghgarh%2C%20Madhya%20Pradesh%20465669!5e0!3m2!1sen!2sin!4v1703318534000!5m2!1sen!2sin"
+                        src="https://www.google.com/maps/embed?pb=!1m14!1m8!1m3!1d6507.283817058164!2d77.0874988!3d23.7041234!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0x397b7b4160b28e3f%3A0x465f1377ed94a5fe!2sSHRI%20VIDHATA%20CREATION%20SERVICES%20OPC%20PVT.%20LTD%20(SUB%20REGIONAL%20DISTRIBUTOR%20OF%20HIKVISION%20AND%20PRAMA)HIKVISION%20CCTV%20CAMERA%20CP%20PLUS!5e1!3m2!1sen!2sin!4v1766506835836!5m2!1sen!2sin"
                         width="100%"
                         height="100%"
                         style={{ border: 0 }}

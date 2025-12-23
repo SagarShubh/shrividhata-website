@@ -2,6 +2,8 @@
 
 import { motion } from "framer-motion";
 import { ExternalLink } from "lucide-react";
+import Image from "next/image";
+import Link from "next/link";
 
 // Placeholder data for portfolio
 const projects = [
@@ -9,19 +11,22 @@ const projects = [
         title: "Corporate Office Surveillance",
         category: "Commercial",
         description: "Complete IP camera setup for a 5-story office building with centralized monitoring.",
-        color: "bg-blue-900",
+        image: "/projects/corporate-office.png",
+        slug: "corporate-office-surveillance",
     },
     {
         title: "Apartment Complex Security",
         category: "Residential",
         description: "Video door phones and gate security implementation for a flexible housing society.",
-        color: "bg-slate-800",
+        image: "/projects/apartment-security.png",
+        slug: "apartment-complex-security",
     },
     {
         title: "Retail Store Chain",
         category: "Retail",
         description: "Anti-theft camera systems installation across 5 showroom locations.",
-        color: "bg-red-900",
+        image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?q=80&w=2070&auto=format&fit=crop",
+        slug: "retail-store-chain",
     },
 ];
 
@@ -48,8 +53,20 @@ export function Portfolio() {
                             transition={{ delay: index * 0.1 }}
                             className="group relative overflow-hidden rounded-xl bg-white shadow-md hover:shadow-xl transition-shadow cursor-pointer"
                         >
-                            {/* Image Placeholder */}
-                            <div className={`h-48 ${project.color} w-full`} />
+                            {/* Project Image */}
+                            <div className="relative h-64 w-full overflow-hidden">
+                                <Image
+                                    src={project.image}
+                                    alt={project.title}
+                                    fill
+                                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                                />
+                                <div className="absolute inset-0 bg-gradient-to-t from-black/60 to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-300 flex items-end p-6">
+                                    <span className="text-white text-sm font-medium flex items-center">
+                                        View Details <ExternalLink className="w-4 h-4 ml-2" />
+                                    </span>
+                                </div>
+                            </div>
 
                             <div className="p-6">
                                 <span className="inline-block px-3 py-1 text-xs font-semibold text-blue-600 bg-blue-50 rounded-full mb-3">
@@ -58,12 +75,15 @@ export function Portfolio() {
                                 <h3 className="text-xl font-bold text-slate-900 mb-2 group-hover:text-primary transition-colors">
                                     {project.title}
                                 </h3>
-                                <p className="text-slate-600 text-sm leading-relaxed mb-4">
+                                <p className="text-slate-600 text-sm leading-relaxed mb-4 line-clamp-2">
                                     {project.description}
                                 </p>
-                                <div className="flex items-center text-secondary font-semibold text-sm">
+                                <Link
+                                    href={`/case-studies/${project.slug}`}
+                                    className="flex items-center text-secondary font-semibold text-sm hover:text-secondary/80 transition-colors"
+                                >
                                     View Case Study <ExternalLink className="w-4 h-4 ml-1" />
-                                </div>
+                                </Link>
                             </div>
                         </motion.div>
                     ))}
