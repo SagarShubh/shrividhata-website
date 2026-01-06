@@ -41,6 +41,8 @@ export default function RootLayout({
         <ScrollToTop />
         <FloatingWhatsApp />
         <FloatingCTA />
+        {/* Zoho Payments Script */}
+        <script src="https://js.zohostatic.com/zohopayments/v1/zpayments.js"></script>
       </body>
     </html>
   );
