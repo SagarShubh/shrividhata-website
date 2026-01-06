@@ -1,18 +1,38 @@
 'use client';
 
 import Link from 'next/link';
+import { useState } from 'react';
 import { Product } from '@/data/products';
-import { ArrowLeft, Check, ShoppingCart, Truck, Shield } from 'lucide-react';
-import { motion } from 'framer-motion';
+import { ArrowLeft, Check, ShoppingCart, Truck, Shield, X, Lock } from 'lucide-react';
+import { motion, AnimatePresence } from 'framer-motion';
 
 interface ProductDetailsClientProps {
     product: Product;
 }
 
 export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
+    const [showShippingModal, setShowShippingModal] = useState(false);
+    const [loading, setLoading] = useState(false);
+    const [shippingDetails, setShippingDetails] = useState({
+        name: '',
+        email: '',
+        phone: '',
+        address: '',
+        city: '',
+        pincode: ''
+    });
 
-    const handleBuyNow = async () => {
+    const handleInputChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+        setShippingDetails({
+            ...shippingDetails,
+            [e.target.name]: e.target.value
+        });
+    };
+
+    const handlePayment = async (e: React.FormEvent) => {
+        e.preventDefault();
         if (!product) return;
+        setLoading(true);
 
         try {
             // 1. Create Payment Session
@@ -24,9 +44,9 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                     currency: 'INR',
                     description: `Purchase: ${product.name}`,
                     customer: {
-                        // In a real app, you'd get this from a form or auth
-                        // For now we rely on Zoho's checkout form to collect details if configured
-                        // or we pass dummy/guest info if required by strict API
+                        name: shippingDetails.name,
+                        email: shippingDetails.email,
+                        phone: shippingDetails.phone
                     }
                 }),
             });
@@ -35,26 +55,23 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
             if (!data.payment_session_id) {
                 if (data.mock_mode) {
-                    alert("MOCK CHECKOUT: Payment Session Created!\n\n(Since we don't have real keys yet, the actual popup won't load, but the wiring is complete.)");
+                    alert("MOCK CHECKOUT: Payment Session Created!");
+                    setLoading(false);
                     return;
                 }
                 throw new Error('No Session ID returned');
             }
 
-            // 2. Initialize Zoho Payments (using the global script we added in layout.tsx)
-            // @ts-ignore - The global variable exists from the script
+            // 2. Initialize Zoho Payments
+            // @ts-ignore
             const zpayment = new window.ZPayment();
 
             zpayment.open({
                 payment_session_id: data.payment_session_id,
-                // Add styling or callbacks here
             });
 
             zpayment.on("payment_success", async (response: any) => {
-                console.log("Payment Successful", response);
-                alert("Payment Successful! Order ID: " + response.order_id);
-
-                // --- Instant Alert: Notify Admin ---
+                // --- Instant Alert: Notify Admin with SHIPPING ADDRESS ---
                 try {
                     await fetch('/api/order-alert', {
                         method: 'POST',
@@ -62,28 +79,30 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             product: product.name,
                             amount: product.price,
                             orderId: response.order_id,
-                            customerName: "Online User"
+                            customerName: shippingDetails.name,
+                            shipping: shippingDetails // Passing full address
                         })
                     });
                 } catch (e) {
                     console.error("Failed to send alert", e);
                 }
-                // -----------------------------------
+
+                alert(`Payment Successful! Order ID: ${response.order_id}\n\nWe have received your shipping details. Check your email for tracking info.`);
+                setShowShippingModal(false);
+                setLoading(false);
             });
 
             zpayment.on("payment_error", (error: any) => {
-                console.error("Payment Failed", error);
                 alert("Payment Failed: " + error.message);
+                setLoading(false);
             });
 
         } catch (error: any) {
             console.error(error);
             alert("Checkout Error: " + error.message);
+            setLoading(false);
         }
     };
-
-    // Fallback image
-    // const imageSrc = product.image.startsWith('/') ? product.image : '/placeholder.jpg';
 
     return (
         <div className="min-h-screen bg-white dark:bg-black pt-24 pb-20">
@@ -106,10 +125,8 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                         className="relative aspect-square rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
                     >
                         <div className="absolute inset-0 flex items-center justify-center text-zinc-300">
-                            {/* Placeholder Icon */}
                             <svg className="w-20 h-20" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path strokeLinecap="round" strokeLinejoin="round" strokeWidth="2" d="M4 16l4.586-4.586a2 2 0 012.828 0L16 16m-2-2l1.586-1.586a2 2 0 012.828 0L20 14m-6-6h.01M6 20h12a2 2 0 002-2V6a2 2 0 00-2-2H6a2 2 0 00-2 2v12a2 2 0 002 2z"></path></svg>
                         </div>
-                        {/* Actual Image Tag would go here with Next/Image */}
                     </motion.div>
 
                     {/* Product Info */}
@@ -131,7 +148,6 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             {product.description}
                         </p>
 
-                        {/* Features List */}
                         <div className="mb-8">
                             <h3 className="font-semibold text-zinc-900 dark:text-white mb-4">Key Features</h3>
                             <ul className="space-y-3">
@@ -144,11 +160,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             </ul>
                         </div>
 
-                        {/* Actions */}
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">
                             <button
                                 className="flex-1 py-4 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/25 active:scale-95"
-                                onClick={handleBuyNow}
+                                onClick={() => setShowShippingModal(true)}
                             >
                                 Buy Now
                             </button>
@@ -158,7 +173,6 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             </button>
                         </div>
 
-                        {/* Trust Badges */}
                         <div className="grid grid-cols-2 gap-4 pt-8 border-t border-zinc-100 dark:border-zinc-800">
                             <div className="flex items-center gap-3 text-sm text-zinc-500">
                                 <Truck size={20} />
@@ -171,9 +185,82 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                         </div>
 
                     </motion.div>
-
                 </div>
             </div>
+
+            {/* Shipping Form Modal */}
+            <AnimatePresence>
+                {showShippingModal && (
+                    <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-black/50 backdrop-blur-sm">
+                        <motion.div
+                            initial={{ opacity: 0, scale: 0.95 }}
+                            animate={{ opacity: 1, scale: 1 }}
+                            exit={{ opacity: 0, scale: 0.95 }}
+                            className="bg-white dark:bg-zinc-900 rounded-2xl shadow-xl w-full max-w-lg overflow-hidden"
+                        >
+                            <div className="p-6 border-b border-zinc-100 dark:border-zinc-800 flex justify-between items-center">
+                                <h3 className="text-xl font-bold text-zinc-900 dark:text-white">Shipping Details</h3>
+                                <button onClick={() => setShowShippingModal(false)} className="text-zinc-400 hover:text-zinc-600">
+                                    <X size={24} />
+                                </button>
+                            </div>
+
+                            <form onSubmit={handlePayment} className="p-6 space-y-4">
+                                <div className="grid grid-cols-2 gap-4">
+                                    <input
+                                        type="text" name="name" placeholder="Full Name" required
+                                        className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={shippingDetails.name} onChange={handleInputChange}
+                                    />
+                                    <input
+                                        type="tel" name="phone" placeholder="Phone Number" required
+                                        className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={shippingDetails.phone} onChange={handleInputChange}
+                                    />
+                                </div>
+                                <input
+                                    type="email" name="email" placeholder="Email Address" required
+                                    className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={shippingDetails.email} onChange={handleInputChange}
+                                />
+                                <div className="grid grid-cols-3 gap-4">
+                                    <input
+                                        type="text" name="city" placeholder="City" required
+                                        className="col-span-2 w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={shippingDetails.city} onChange={handleInputChange}
+                                    />
+                                    <input
+                                        type="text" name="pincode" placeholder="Pin Code" required
+                                        className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                        value={shippingDetails.pincode} onChange={handleInputChange}
+                                    />
+                                </div>
+                                <textarea
+                                    name="address" placeholder="Full Shipping Address" required rows={3}
+                                    className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                    value={shippingDetails.address} onChange={handleInputChange}
+                                ></textarea>
+
+                                <button
+                                    type="submit"
+                                    disabled={loading}
+                                    className="w-full py-4 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/25 active:scale-95 disabled:opacity-70 disabled:cursor-not-allowed"
+                                >
+                                    {loading ? 'Processing...' : (
+                                        <>
+                                            <Lock size={18} />
+                                            Proceed to Secure Payment
+                                        </>
+                                    )}
+                                </button>
+                                <p className="text-center text-xs text-zinc-500">
+                                    Trusted by 10,000+ Customers across India
+                                </p>
+                            </form>
+                        </motion.div>
+                    </div>
+                )}
+            </AnimatePresence>
         </div>
     );
 }
