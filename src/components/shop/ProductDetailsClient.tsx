@@ -50,9 +50,25 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                 // Add styling or callbacks here
             });
 
-            zpayment.on("payment_success", (response: any) => {
+            zpayment.on("payment_success", async (response: any) => {
                 console.log("Payment Successful", response);
                 alert("Payment Successful! Order ID: " + response.order_id);
+
+                // --- Instant Alert: Notify Admin ---
+                try {
+                    await fetch('/api/order-alert', {
+                        method: 'POST',
+                        body: JSON.stringify({
+                            product: product.name,
+                            amount: product.price,
+                            orderId: response.order_id,
+                            customerName: "Online User"
+                        })
+                    });
+                } catch (e) {
+                    console.error("Failed to send alert", e);
+                }
+                // -----------------------------------
             });
 
             zpayment.on("payment_error", (error: any) => {
