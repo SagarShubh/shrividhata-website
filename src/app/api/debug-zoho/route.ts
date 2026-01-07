@@ -57,12 +57,7 @@ export async function GET() {
         // Return early to see orgs
         return NextResponse.json(status);
 
-        const itemsData = await itemsRes.json();
-        status.connection = 'SUCCESS';
-        status.dataPreview = {
-            total: itemsData.items?.length,
-            firstItem: itemsData.items?.[0]
-        };
+
 
     } catch (e: any) {
         status.connection = 'EXCEPTION';
