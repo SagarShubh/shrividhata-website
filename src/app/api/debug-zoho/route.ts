@@ -54,7 +54,27 @@ export async function GET() {
         status.connection = 'SUCCESS_ORG_LIST';
         status.dataPreview = orgData;
 
-        // Return early to see orgs
+        // 3. Fetch Items from Zoho Books API (same as application logic)
+        const itemsUrl = `https://books.zoho.in/api/v3/items?organization_id=${orgId}&status=active`;
+        const itemsRes = await fetch(itemsUrl, {
+            headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` }
+        });
+
+        if (!itemsRes.ok) {
+            status.connection = 'API_ERROR_ITEMS_FETCH';
+            // @ts-ignore
+            status.error = await itemsRes.text();
+            return NextResponse.json(status);
+        }
+
+        const itemsData = await itemsRes.json();
+        status.connection = 'SUCCESS';
+        status.dataPreview = {
+            orgs: orgData,
+            itemsCount: itemsData.items?.length,
+            firstItem: itemsData.items?.[0]
+        };
+
         return NextResponse.json(status);
 
 
