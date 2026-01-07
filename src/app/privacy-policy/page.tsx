@@ -14,7 +14,7 @@ export default function PrivacyPolicy() {
                     <section>
                         <h2 className="text-2xl font-bold text-slate-800 mb-4">1. Introduction</h2>
                         <p className="text-slate-600 leading-relaxed">
-                            Welcome to ShriVidhata Creation Services Pvt. Ltd. Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our website or services.
+                            Welcome to Shri Vidhata Creations Services (OPC) Pvt. Ltd. Your privacy is important to us. This Privacy Policy explains how we collect, use, and protect your personal information when you use our website or services.
                         </p>
                     </section>
 

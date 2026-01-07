@@ -31,77 +31,9 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
 
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
-        if (!product) return;
-        setLoading(true);
-
-        try {
-            // 1. Create Payment Session
-            const response = await fetch('/api/checkout/zoho', {
-                method: 'POST',
-                headers: { 'Content-Type': 'application/json' },
-                body: JSON.stringify({
-                    amount: product.price,
-                    currency: 'INR',
-                    description: `Purchase: ${product.name}`,
-                    customer: {
-                        name: shippingDetails.name,
-                        email: shippingDetails.email,
-                        phone: shippingDetails.phone
-                    }
-                }),
-            });
-
-            const data = await response.json();
-
-            if (!data.payment_session_id) {
-                if (data.mock_mode) {
-                    alert("MOCK CHECKOUT: Payment Session Created!");
-                    setLoading(false);
-                    return;
-                }
-                throw new Error('No Session ID returned');
-            }
-
-            // 2. Initialize Zoho Payments
-            // @ts-ignore
-            const zpayment = new window.ZPayment();
-
-            zpayment.open({
-                payment_session_id: data.payment_session_id,
-            });
-
-            zpayment.on("payment_success", async (response: any) => {
-                // --- Instant Alert: Notify Admin with SHIPPING ADDRESS ---
-                try {
-                    await fetch('/api/order-alert', {
-                        method: 'POST',
-                        body: JSON.stringify({
-                            product: product.name,
-                            amount: product.price,
-                            orderId: response.order_id,
-                            customerName: shippingDetails.name,
-                            shipping: shippingDetails // Passing full address
-                        })
-                    });
-                } catch (e) {
-                    console.error("Failed to send alert", e);
-                }
-
-                alert(`Payment Successful! Order ID: ${response.order_id}\n\nWe have received your shipping details. Check your email for tracking info.`);
-                setShowShippingModal(false);
-                setLoading(false);
-            });
-
-            zpayment.on("payment_error", (error: any) => {
-                alert("Payment Failed: " + error.message);
-                setLoading(false);
-            });
-
-        } catch (error: any) {
-            console.error(error);
-            alert("Checkout Error: " + error.message);
-            setLoading(false);
-        }
+        // Payment integration deferred
+        alert("Payments are currently disabled. Please contact us for orders.");
+        setShowShippingModal(false);
     };
 
     return (
@@ -161,12 +93,12 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                         </div>
 
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                            <button
+                            {/* <button
                                 className="flex-1 py-4 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/25 active:scale-95"
                                 onClick={() => setShowShippingModal(true)}
                             >
                                 Buy Now
-                            </button>
+                            </button> */}
                             <button className="flex-1 py-4 px-8 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
                                 <ShoppingCart size={20} />
                                 Add to Cart

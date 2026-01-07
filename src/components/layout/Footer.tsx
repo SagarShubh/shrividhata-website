@@ -86,10 +86,13 @@ export function Footer() {
                 </div>
 
                 <div className="pt-8 border-t border-slate-800 text-center text-slate-500 text-sm flex flex-col md:flex-row justify-between items-center gap-4">
-                    <p>© {new Date().getFullYear()} ShriVidhata Creation Services Pvt. Ltd. All rights reserved.</p>
-                    <div className="flex gap-6">
-                        <Link href="/privacy-policy" className="hover:text-white transition-colors">Privacy Policy</Link>
-                        <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms of Service</Link>
+                    <p>© {new Date().getFullYear()} - Shri Vidhata Creations Services (OPC) Pvt. Ltd.</p>
+                    <div className="flex flex-wrap justify-center gap-4 md:gap-6">
+                        <Link href="/terms-of-service" className="hover:text-white transition-colors">Terms & Conditions</Link>
+                        <span className="hidden md:inline">|</span>
+                        <Link href="/shipping-policy" className="hover:text-white transition-colors">Shipping Policy</Link>
+                        <span className="hidden md:inline">|</span>
+                        <Link href="/refund-policy" className="hover:text-white transition-colors">Refund & Cancellation</Link>
                     </div>
                 </div>
             </div>
