@@ -76,8 +76,8 @@ export async function getZohoProducts(): Promise<Product[]> {
 
         // 3. Fetch Items
         // We filter by status=active
-        // SWITCH TO ZOHO BOOKS API
-        const res = await fetch(`https://books.zoho.in/api/v3/items?organization_id=${ZOHO_ORG_ID}&status=active`, {
+        // SWITCH TO ZOHO BOOKS API on .in data center
+        const res = await fetch(`https://www.zohoapis.in/books/v3/items?organization_id=${ZOHO_ORG_ID}&status=active`, {
             headers: {
                 'Authorization': `Zoho-oauthtoken ${token}`,
             },

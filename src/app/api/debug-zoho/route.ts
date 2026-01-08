@@ -36,7 +36,7 @@ export async function GET() {
         const accessToken = tokenData.access_token;
 
         // 2. Fetch Organizations (to verify access and ID)
-        const orgUrl = `https://books.zoho.in/api/v3/organizations`;
+        const orgUrl = `https://www.zohoapis.in/books/v3/organizations`;
         const orgRes = await fetch(orgUrl, {
             headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` }
         });
@@ -55,7 +55,7 @@ export async function GET() {
         status.dataPreview = orgData;
 
         // 3. Fetch Items from Zoho Books API (same as application logic)
-        const itemsUrl = `https://books.zoho.in/api/v3/items?organization_id=${orgId}&status=active`;
+        const itemsUrl = `https://www.zohoapis.in/books/v3/items?organization_id=${orgId}&status=active`;
         const itemsRes = await fetch(itemsUrl, {
             headers: { 'Authorization': `Zoho-oauthtoken ${accessToken}` }
         });

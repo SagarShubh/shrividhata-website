@@ -35,7 +35,7 @@ Zoho uses OAuth. You need to do a one-time "handshake" to get a token that lasts
    Copy and paste this URL into your browser (replace `YOUR_CLIENT_ID` with the one you just got):
    
    ```
-   https://accounts.zoho.in/oauth/v2/auth?scope=ZohoInventory.items.READ&client_id=YOUR_CLIENT_ID&response_type=code&access_type=offline&redirect_uri=http://localhost:3000/api/auth/callback/zoho
+   https://accounts.zoho.in/oauth/v2/auth?scope=ZohoInventory.FullAccess.all,ZohoBooks.FullAccess.all&client_id=YOUR_CLIENT_ID&response_type=code&access_type=offline&redirect_uri=http://localhost:3000/api/auth/callback/zoho
    ```
    
    *Note: If your account is `.com`, change `accounts.zoho.in` to `accounts.zoho.com`.*
