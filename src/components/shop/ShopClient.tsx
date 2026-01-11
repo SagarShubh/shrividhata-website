@@ -3,10 +3,12 @@
 import { useState } from 'react';
 import { Category, Product } from '@/data/products';
 import ProductCard from '@/components/shop/ProductCard';
-import { Filter, Search } from 'lucide-react';
+import { Filter, Search, ArrowUpDown } from 'lucide-react';
 import { motion, AnimatePresence } from 'framer-motion';
 
 const categories: Category[] = ['Cameras', 'Recorders', 'Storage', 'Accessories', 'Networking'];
+
+type SortOption = 'price-asc' | 'price-desc' | 'name-asc';
 
 interface ShopClientProps {
     initialProducts: Product[];
@@ -15,6 +17,7 @@ interface ShopClientProps {
 export default function ShopClient({ initialProducts }: ShopClientProps) {
     const [selectedCategory, setSelectedCategory] = useState<Category | 'All'>('All');
     const [searchQuery, setSearchQuery] = useState('');
+    const [sortOption, setSortOption] = useState<SortOption>('price-asc');
     const [showFilters, setShowFilters] = useState(false);
 
     // Filter logic
@@ -23,6 +26,20 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
         const matchesSearch = product.name.toLowerCase().includes(searchQuery.toLowerCase()) ||
             product.description.toLowerCase().includes(searchQuery.toLowerCase());
         return matchesCategory && matchesSearch;
+    });
+
+    // Sort logic
+    const sortedProducts = [...filteredProducts].sort((a, b) => {
+        switch (sortOption) {
+            case 'price-asc':
+                return a.price - b.price;
+            case 'price-desc':
+                return b.price - a.price;
+            case 'name-asc':
+                return a.name.localeCompare(b.name);
+            default:
+                return 0;
+        }
     });
 
     return (
@@ -41,10 +58,11 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
                 {/* Controls Bar */}
                 <div className="sticky top-20 z-30 bg-white/80 dark:bg-zinc-900/80 backdrop-blur-md rounded-2xl p-4 shadow-sm border border-zinc-200 dark:border-zinc-800 mb-8">
-                    <div className="flex flex-col md:flex-row gap-4 justify-between items-center">
+
+                    <div className="flex flex-col lg:flex-row gap-4 justify-between items-center">
 
                         {/* Search */}
-                        <div className="relative w-full md:w-96">
+                        <div className="relative w-full lg:w-80 order-1 lg:order-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                             <input
                                 type="text"
@@ -56,12 +74,12 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                         </div>
 
                         {/* Desktop Categories */}
-                        <div className="hidden md:flex flex-wrap gap-2">
+                        <div className="hidden lg:flex flex-wrap justify-center gap-2 order-2">
                             <button
                                 onClick={() => setSelectedCategory('All')}
                                 className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategory === 'All'
-                                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                    ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                     }`}
                             >
                                 All
@@ -71,8 +89,8 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                                     key={cat}
                                     onClick={() => setSelectedCategory(cat)}
                                     className={`px-4 py-2 rounded-full text-sm font-medium transition-all ${selectedCategory === cat
-                                            ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
-                                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
+                                        ? 'bg-blue-600 text-white shadow-lg shadow-blue-500/25'
+                                        : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 hover:bg-zinc-200 dark:hover:bg-zinc-700'
                                         }`}
                                 >
                                     {cat}
@@ -80,13 +98,34 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                             ))}
                         </div>
 
-                        {/* Mobile Filter Toggle */}
-                        <button
-                            className="md:hidden p-2 rounded-lg bg-zinc-100 dark:bg-zinc-800"
-                            onClick={() => setShowFilters(!showFilters)}
-                        >
-                            <Filter size={20} />
-                        </button>
+                        {/* Mobile Controls & Sort */}
+                        <div className="flex w-full lg:w-auto gap-2 order-3 lg:order-3">
+                            {/* Mobile Filter Toggle */}
+                            <button
+                                className="lg:hidden p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 flex-1 flex items-center justify-center gap-2 font-medium"
+                                onClick={() => setShowFilters(!showFilters)}
+                            >
+                                <Filter size={18} />
+                                <span className='text-sm'>Filter</span>
+                            </button>
+
+                            {/* Sort Dropdown */}
+                            <div className="relative flex-1 lg:flex-none">
+                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
+                                    <ArrowUpDown size={16} />
+                                </div>
+                                <select
+                                    value={sortOption}
+                                    onChange={(e) => setSortOption(e.target.value as SortOption)}
+                                    className="w-full lg:w-48 pl-10 pr-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-none text-sm text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                                    style={{ backgroundImage: 'none' }} // Remove default arrow in some browsers
+                                >
+                                    <option value="price-asc">Price: Low to High</option>
+                                    <option value="price-desc">Price: High to Low</option>
+                                    <option value="name-asc">Name: A to Z</option>
+                                </select>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Mobile Categories (Collapsible) */}
@@ -96,14 +135,14 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                                 initial={{ height: 0, opacity: 0 }}
                                 animate={{ height: 'auto', opacity: 1 }}
                                 exit={{ height: 0, opacity: 0 }}
-                                className="md:hidden overflow-hidden"
+                                className="lg:hidden overflow-hidden"
                             >
-                                <div className="flex flex-wrap gap-2 pt-4 pb-2">
+                                <div className="flex flex-wrap gap-2 pt-4 pb-2 border-t border-zinc-200 dark:border-zinc-800 mt-4">
                                     <button
                                         onClick={() => setSelectedCategory('All')}
                                         className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${selectedCategory === 'All'
-                                                ? 'bg-blue-600 text-white'
-                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                                            ? 'bg-blue-600 text-white'
+                                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                                             }`}
                                     >
                                         All
@@ -113,8 +152,8 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                                             key={cat}
                                             onClick={() => setSelectedCategory(cat)}
                                             className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${selectedCategory === cat
-                                                    ? 'bg-blue-600 text-white'
-                                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
+                                                ? 'bg-blue-600 text-white'
+                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
                                                 }`}
                                         >
                                             {cat}
@@ -128,8 +167,8 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
 
                 {/* Product Grid */}
                 <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {filteredProducts.length > 0 ? (
-                        filteredProducts.map((product) => (
+                    {sortedProducts.length > 0 ? (
+                        sortedProducts.map((product) => (
                             <ProductCard key={product.id} product={product} />
                         ))
                     ) : (

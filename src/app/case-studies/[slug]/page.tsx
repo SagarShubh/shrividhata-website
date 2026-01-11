@@ -188,7 +188,54 @@ export default function CaseStudyPage() {
                         </div>
                     </motion.div>
                 </div>
+
+                {/* Next/Prev Navigation */}
+                <div className="mt-20 border-t border-slate-100 pt-10">
+                    <div className="flex justify-between items-center">
+                        {/* Logic to find next/prev would go here. For now, simple "Next Project" logic */}
+                        <NavigationLinks currentSlug={slug} />
+                    </div>
+                </div>
             </div>
         </main>
+    );
+}
+
+function NavigationLinks({ currentSlug }: { currentSlug: string }) {
+    const slugs = Object.keys(caseStudies);
+    const currentIndex = slugs.indexOf(currentSlug);
+
+    // Cyclic navigation
+    const nextIndex = (currentIndex + 1) % slugs.length;
+    const prevIndex = (currentIndex - 1 + slugs.length) % slugs.length;
+
+    const nextSlug = slugs[nextIndex];
+    const prevSlug = slugs[prevIndex];
+
+    const nextProject = caseStudies[nextSlug as keyof typeof caseStudies];
+    const prevProject = caseStudies[prevSlug as keyof typeof caseStudies];
+
+    return (
+        <div className="w-full flex justify-between gap-4">
+            <Link
+                href={`/case-studies/${prevSlug}`}
+                className="group flex flex-col items-start gap-1 p-4 rounded-xl hover:bg-slate-50 transition-colors text-left"
+            >
+                <span className="text-sm text-slate-400 font-medium group-hover:text-primary transition-colors flex items-center">
+                    <ArrowLeft className="w-3 h-3 mr-1 transition-transform group-hover:-translate-x-1" /> Previous Project
+                </span>
+                <span className="text-lg font-bold text-slate-900">{prevProject.title}</span>
+            </Link>
+
+            <Link
+                href={`/case-studies/${nextSlug}`}
+                className="group flex flex-col items-end gap-1 p-4 rounded-xl hover:bg-slate-50 transition-colors text-right"
+            >
+                <span className="text-sm text-slate-400 font-medium group-hover:text-primary transition-colors flex items-center">
+                    Next Project <ArrowLeft className="w-3 h-3 ml-1 rotate-180 transition-transform group-hover:translate-x-1" />
+                </span>
+                <span className="text-lg font-bold text-slate-900">{nextProject.title}</span>
+            </Link>
+        </div>
     );
 }
