@@ -148,10 +148,170 @@ export async function getZohoProducts(): Promise<Product[]> {
     }
 }
 
-export async function getZohoProduct(id: string): Promise<Product | undefined> {
-    const allProducts = await getZohoProducts();
-    // In efficient real-world, we would fetch single item from API:
-    // GET https://inventory.zoho.in/api/v1/items/${id}
-    // But since we have a small shop, fetching all is fine for now and easier for caching.
-    return allProducts.find(p => p.id === id);
+
+/**
+ * Create a new item in Zoho Inventory
+ */
+export async function createZohoProduct(formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return { success: false, error: 'Authentication failed' };
+
+    const name = formData.get('name') as string;
+    const rate = parseFloat(formData.get('price') as string);
+    const description = formData.get('description') as string;
+    const quantity = parseInt(formData.get('stock') as string);
+    const category = formData.get('category') as string;
+    const subCategory = formData.get('subCategory') as string;
+    const sku = formData.get('sku') as string;
+
+    // 1. Create Item JSON
+    const itemData = {
+        name,
+        rate,
+        description,
+        sku,
+        item_type: 'sales', // or 'inventory' if you track inventory
+        status: 'active',
+        initial_stock: quantity, // Only works for inventory items usually, simplified here
+        initial_stock_rate: rate,
+        cf_category: category,
+        cf_subcategory: subCategory
+        // unit: 'box', // Default unit?
+    };
+
+    try {
+        const res = await fetch(`https://www.zohoapis.in/books/v3/items?organization_id=${ZOHO_ORG_ID}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(itemData)
+        });
+
+        const data = await res.json();
+
+        if (data.code !== 0) {
+            console.error('Zoho Create Error:', data);
+            return { success: false, error: data.message };
+        }
+
+        const itemId = data.item.item_id;
+
+        // 2. Upload Image if present
+        const imageFile = formData.get('image') as File;
+        if (imageFile && imageFile.size > 0) {
+            await uploadZohoImage(itemId, imageFile);
+        }
+
+        return { success: true };
+    } catch (e) {
+        console.error(e);
+        return { success: false, error: 'Network error' };
+    }
 }
+
+/**
+ * Update an existing item
+ */
+export async function updateZohoProduct(id: string, formData: FormData): Promise<{ success: boolean; error?: string }> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return { success: false, error: 'Authentication failed' };
+
+    const name = formData.get('name') as string;
+    const rate = parseFloat(formData.get('price') as string);
+    const description = formData.get('description') as string;
+    const category = formData.get('category') as string;
+    const subCategory = formData.get('subCategory') as string;
+    const sku = formData.get('sku') as string;
+
+    const itemData = {
+        name,
+        rate,
+        description,
+        sku,
+        cf_category: category,
+        cf_subcategory: subCategory
+    };
+
+    try {
+        const res = await fetch(`https://www.zohoapis.in/books/v3/items/${id}?organization_id=${ZOHO_ORG_ID}`, {
+            method: 'PUT',
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(itemData)
+        });
+
+        const data = await res.json();
+
+        if (data.code !== 0) {
+            return { success: false, error: data.message };
+        }
+
+        // 2. Upload/Replace Image if present
+        const imageFile = formData.get('image') as File;
+        if (imageFile && imageFile.size > 0) {
+            await uploadZohoImage(id, imageFile);
+        }
+
+        return { success: true };
+    } catch (e) {
+        return { success: false, error: 'Network error' };
+    }
+}
+
+/**
+ * Delete an item
+ */
+export async function deleteZohoProduct(id: string): Promise<{ success: boolean; error?: string }> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return { success: false, error: 'Authentication failed' };
+
+    try {
+        const res = await fetch(`https://www.zohoapis.in/books/v3/items/${id}?organization_id=${ZOHO_ORG_ID}`, {
+            method: 'DELETE',
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`
+            }
+        });
+        const data = await res.json();
+        if (data.code !== 0) return { success: false, error: data.message };
+
+        return { success: true };
+    } catch (error) {
+        return { success: false, error: 'Network error' };
+    }
+}
+
+/**
+ * Upload Image to Zoho Item
+ */
+export async function uploadZohoImage(itemId: string, file: File): Promise<boolean> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return false;
+
+    const formData = new FormData();
+    formData.append('image', file);
+    // Sometimes Zoho expects 'image' or 'document'
+
+    try {
+        // Correct endpoint for uploading item image
+        const res = await fetch(`https://www.zohoapis.in/books/v3/items/${itemId}/image?organization_id=${ZOHO_ORG_ID}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`,
+                // Do NOT set Content-Type here, let fetch set it with boundary for FormData
+            },
+            body: formData
+        });
+
+        const data = await res.json();
+        return data.code === 0;
+    } catch (e) {
+        console.error("Image upload failed", e);
+        return false;
+    }
+}
+
