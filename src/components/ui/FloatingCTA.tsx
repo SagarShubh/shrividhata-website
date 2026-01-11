@@ -18,7 +18,7 @@ export function FloatingCTA() {
     return (
         <motion.div
             style={{ opacity, y }}
-            className="fixed bottom-6 left-1/2 -translate-x-1/2 z-40 hidden sm:block"
+            className="fixed bottom-6 left-6 z-40 hidden sm:block"
         >
             <button
                 onClick={scrollToContact}
