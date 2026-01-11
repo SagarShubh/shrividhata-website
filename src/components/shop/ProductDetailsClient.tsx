@@ -145,7 +145,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             </div>
 
                             <form onSubmit={handlePayment} className="p-6 space-y-4">
-                                <div className="grid grid-cols-2 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
                                     <input
                                         type="text" name="name" placeholder="Full Name" required
                                         className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
@@ -162,10 +162,10 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                     className="w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
                                     value={shippingDetails.email} onChange={handleInputChange}
                                 />
-                                <div className="grid grid-cols-3 gap-4">
+                                <div className="grid grid-cols-1 sm:grid-cols-3 gap-4">
                                     <input
                                         type="text" name="city" placeholder="City" required
-                                        className="col-span-2 w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
+                                        className="sm:col-span-2 w-full p-3 rounded-xl bg-zinc-50 dark:bg-zinc-800 border-none outline-none focus:ring-2 focus:ring-blue-500"
                                         value={shippingDetails.city} onChange={handleInputChange}
                                     />
                                     <input
