@@ -14,7 +14,7 @@ const navLinks = [
     { name: "Shop", href: "/shop" },
     { name: "Portfolio", href: "/#portfolio" },
     { name: "FAQ", href: "/#faq" },
-    { name: "Contact", href: "/#contact" },
+    { name: "Contact", href: "/contact" },
 ];
 
 export function Header() {
@@ -52,7 +52,7 @@ export function Header() {
                             </Link>
                         ))}
                         <Link
-                            href="/#contact"
+                            href="/contact"
                             className="px-5 py-2.5 text-sm font-semibold text-white bg-primary rounded-full hover:bg-blue-800 transition-colors shadow-lg shadow-blue-900/20"
                         >
                             Get a Quote
@@ -91,7 +91,7 @@ export function Header() {
                                 </Link>
                             ))}
                             <Link
-                                href="/#contact"
+                                href="/contact"
                                 onClick={() => setIsOpen(false)}
                                 className="block w-full text-center px-5 py-3 text-base font-semibold text-white bg-primary rounded-lg hover:bg-blue-800 transition-colors"
                             >
