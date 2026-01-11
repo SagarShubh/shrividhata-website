@@ -19,35 +19,40 @@ const steps = [
         title: "Discovery & Consultation",
         description: "We start by listening. We understand your specific security concerns, operational needs, and budget to define the perfect scope.",
         icon: MessageSquare,
-        details: ["Initial Meeting", "Requirement Analysis", "Budget Planning"]
+        details: ["Initial Meeting", "Requirement Analysis", "Budget Planning"],
+        image: "/process/1.png"
     },
     {
         id: 2,
         title: "Site Survey & Analysis",
         description: "Our experts visit your premises to identify blind spots, lighting conditions, and cabling routes for optimal coverage.",
         icon: Ruler,
-        details: ["Blind Spot Identification", "Cabling Route Planning", "Network Assessment"]
+        details: ["Blind Spot Identification", "Cabling Route Planning", "Network Assessment"],
+        image: "/process/2.png"
     },
     {
         id: 3,
         title: "Custom Solution Design",
         description: "We don't do one-size-fits-all. We engineer a tailored system architecture that perfectly matches your facility's layout.",
         icon: PenTool,
-        details: ["Camera Placement Map", "Storage Calculation", "Product Selection"]
+        details: ["Camera Placement Map", "Storage Calculation", "Product Selection"],
+        image: "/process/3.png"
     },
     {
         id: 4,
         title: "Expert Installation",
         description: "Our certified technicians ensure a clean, professional setup with concealed wiring and minimal disruption to your daily operations.",
         icon: Wrench,
-        details: ["Neat Cabling", "Device Mounting", "System Configuration"]
+        details: ["Neat Cabling", "Device Mounting", "System Configuration"],
+        image: "/process/4.png"
     },
     {
         id: 5,
         title: "Training & Support",
         description: "We don't just leave. We train you to use the system and provide ongoing support to ensure your security never falters.",
         icon: Headphones,
-        details: ["User Training", "Mobile App Setup", "Annual Maintenance"]
+        details: ["User Training", "Mobile App Setup", "Annual Maintenance"],
+        image: "/process/5.png"
     }
 ];
 
@@ -123,7 +128,20 @@ export default function ProcessPage() {
                             </div>
 
                             {/* Empty Side for Desktop alignment */}
-                            <div className="hidden md:block w-1/2" />
+                            {/* Image Side */}
+                            <div className={`w-full md:w-1/2 flex justify-center ${index % 2 === 0 ? "md:justify-start" : "md:justify-end"
+                                }`}>
+                                <div className="relative w-full max-w-sm aspect-square">
+                                    <div className="absolute inset-0 bg-blue-500/5 rounded-full blur-3xl transform scale-75" />
+                                    <Image
+                                        src={step.image}
+                                        alt={step.title}
+                                        width={500}
+                                        height={500}
+                                        className="relative z-10 w-full h-full object-contain drop-shadow-xl"
+                                    />
+                                </div>
+                            </div>
                         </motion.div>
                     ))}
                 </div>
