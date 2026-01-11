@@ -5,16 +5,12 @@ import Link from "next/link";
 import { Menu, X, ShieldCheck } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
 
-const navLinks = [
-    { name: "Home", href: "/" },
-    { name: "About", href: "/#about" },
-    { name: "Services", href: "/#services" },
-    { name: "Process", href: "/process" },
-    { name: "Brands", href: "/#brands" },
-    { name: "Shop", href: "/shop" },
-    { name: "Portfolio", href: "/#portfolio" },
-    { name: "FAQ", href: "/#faq" },
-    { name: "Contact", href: "/contact" },
+{ name: "Home", href: "/" },
+{ name: "About", href: "/about" },
+{ name: "Services", href: "/services" },
+{ name: "AMC Plans", href: "/amc" },
+{ name: "Shop", href: "/shop" },
+{ name: "Contact", href: "/contact" },
 ];
 
 export function Header() {
