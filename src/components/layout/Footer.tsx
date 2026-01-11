@@ -38,6 +38,7 @@ export function Footer() {
                         <ul className="space-y-3">
                             <FooterLink href="/" label="Home" />
                             <FooterLink href="/#about" label="About Us" />
+                            <FooterLink href="/process" label="Our Process" />
                             <FooterLink href="/#services" label="Services" />
                             <FooterLink href="/#brands" label="Brands" />
                             <FooterLink href="/#portfolio" label="Our Work" />
