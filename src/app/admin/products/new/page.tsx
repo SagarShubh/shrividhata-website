@@ -1,7 +1,5 @@
 import { ProductForm } from '../product-form';
-import { createProductAction } from '../actions';
-// @ts-ignore
-import { useActionState } from 'react'; // Not using this yet, manual submission
+import { createProductAction } from '../../actions';
 
 export default function NewProductPage() {
     return <ProductForm action={async (formData) => {

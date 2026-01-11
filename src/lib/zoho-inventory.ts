@@ -149,6 +149,14 @@ export async function getZohoProducts(): Promise<Product[]> {
 }
 
 
+export async function getZohoProduct(id: string): Promise<Product | undefined> {
+    const allProducts = await getZohoProducts();
+    // In efficient real-world, we would fetch single item from API:
+    // GET https://inventory.zoho.in/api/v1/items/${id}
+    // But since we have a small shop, fetching all is fine for now and easier for caching.
+    return allProducts.find(p => p.id === id);
+}
+
 /**
  * Create a new item in Zoho Inventory
  */

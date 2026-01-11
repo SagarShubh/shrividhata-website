@@ -1,5 +1,5 @@
 import { ProductForm } from '../product-form';
-import { updateProductAction } from '../actions';
+import { updateProductAction } from '../../actions';
 import { getZohoProduct } from '@/lib/zoho-inventory';
 import { notFound } from 'next/navigation';
 
