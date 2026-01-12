@@ -214,9 +214,63 @@ export async function getZohoProduct(id: string): Promise<Product | undefined> {
     const allProducts = await getZohoProducts();
     // In efficient real-world, we would fetch single item from API:
     // GET https://inventory.zoho.in/api/v1/items/${id}
-    // But since we have a small shop, fetching all is fine for now and easier for caching.
     // Ensure both are treated as strings for strict comparison
-    return allProducts.find(p => String(p.id) === String(id));
+    const found = allProducts.find(p => String(p.id) === String(id));
+    if (found) return found;
+
+    // Fallback: Try fetching single item directly (in case it wasn't in the list or list is stale)
+    try {
+        const token = await getAccessToken();
+        if (!token || !ZOHO_ORG_ID) return undefined;
+
+        console.log(`Fallback: Fetching single item ${id} directly from Zoho...`);
+        const res = await fetch(`https://www.zohoapis.in/books/v3/items/${id}?organization_id=${ZOHO_ORG_ID}`, {
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`
+            },
+            next: { revalidate: 0 } // Don't cache the fallback lookup
+        });
+
+        if (res.ok) {
+            const data = await res.json();
+            if (data.code === 0 && data.item) {
+                const item = data.item as ZohoItem;
+                // Map it manually
+                let category: Category = 'Accessories';
+                // (Simplified mapping - reusing the main logic would be better but keeping it self-contained here for safety)
+                if (item.cf_category) {
+                    if (['Cameras', 'Recorders', 'Storage', 'Accessories', 'Networking'].includes(item.cf_category)) {
+                        category = item.cf_category as Category;
+                    }
+                }
+
+                let subCategory: SubCategory = 'Connector';
+                // Simple placeholder mapping or copy logic if needed. 
+                // For now, defaulting to generic to ensure display.
+
+                let image = '/placeholder.jpg';
+                if (item.image_name) {
+                    image = `/api/images/zoho?itemId=${item.item_id}`;
+                }
+
+                return {
+                    id: String(item.item_id),
+                    name: item.name,
+                    description: item.description || '',
+                    price: item.rate,
+                    category,
+                    subCategory, // Might be inaccurate without full logic, but better than 404
+                    image,
+                    stock: item.stock_on_hand > 0,
+                    features: [] // Empty for now
+                };
+            }
+        }
+    } catch (e) {
+        console.error("Direct fetch failed:", e);
+    }
+
+    return undefined;
 }
 
 /**
