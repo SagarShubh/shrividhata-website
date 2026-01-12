@@ -245,10 +245,11 @@ export async function getZohoProduct(id: string): Promise<Product | undefined> {
                 }
 
                 let subCategory: SubCategory = 'Connector';
-                // Simple placeholder mapping or copy logic if needed. 
+                // Simple placeholder mapping or copy logic if needed.
                 // For now, defaulting to generic to ensure display.
 
-                let image = '/placeholder.jpg';
+                // Use a valid default image from our public/products folder
+                let image = '/products/dome-cam.jpg';
                 if (item.image_name) {
                     image = `/api/images/zoho?itemId=${item.item_id}`;
                 }

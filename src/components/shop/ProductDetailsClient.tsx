@@ -12,7 +12,10 @@ interface ProductDetailsClientProps {
 }
 
 export default function ProductDetailsClient({ product }: ProductDetailsClientProps) {
-    const imageSrc = product.image.startsWith('/') ? product.image : '/placeholder.jpg';
+    // Ensure we handle both local paths and full URLs, and fallback to a real image not 'placeholder.jpg'
+    const imageSrc = (product.image && (product.image.startsWith('/') || product.image.startsWith('http')))
+        ? product.image
+        : '/products/dome-cam.jpg';
     const [showShippingModal, setShowShippingModal] = useState(false);
     const [loading, setLoading] = useState(false);
     const [shippingDetails, setShippingDetails] = useState({
