@@ -100,28 +100,48 @@ export async function getZohoProducts(): Promise<Product[]> {
 
         // 4. Map to Product Schema
         const mappedProducts = items.map(item => {
-            // Helper to safe-cast category, defaulting to 'Accessories' if robust match fails
+            // Helper to safe-cast category
             let category: Category = 'Accessories';
+
+            // 1. Try Custom Field first (case insensitive)
             if (item.cf_category) {
-                // Try to match somewhat permissively (case insensitive?)
-                // For now, strict match assuming user inputs it correctly in Zoho
-                // But we should cast carefully
-                if (['Cameras', 'Recorders', 'Storage', 'Accessories', 'Networking'].includes(item.cf_category)) {
-                    category = item.cf_category as Category;
-                }
+                const cf = item.cf_category.toLowerCase();
+                if (cf.includes('camera')) category = 'Cameras';
+                else if (cf.includes('record') || cf.includes('nvr') || cf.includes('dvr')) category = 'Recorders';
+                else if (cf.includes('storage') || cf.includes('drive') || cf.includes('hdd')) category = 'Storage';
+                else if (cf.includes('network') || cf.includes('switch') || cf.includes('router')) category = 'Networking';
+                else if (cf.includes('cable') || cf.includes('connector')) category = 'Accessories';
+            }
+            // 2. Fallback to Name Analysis if CF is missing/empty
+            else {
+                const name = item.name.toLowerCase();
+                if (name.includes('camera') || name.includes('dome') || name.includes('bullet')) category = 'Cameras';
+                else if (name.includes('nvr') || name.includes('dvr')) category = 'Recorders';
+                else if (name.includes('hdd') || name.includes('wd') || name.includes('seagate')) category = 'Storage';
+                else category = 'Accessories';
             }
 
             const subCategory = (item.cf_subcategory as SubCategory) || 'Connector';
 
-            // Placeholder for image. 
-            // TODO: If Zoho public portal is enabled, we could construct URL:
-            // https://inventory.zoho.com/api/v1/items/{item_id}/image?organization_id={org_id} (Requires auth usually)
-            // For now, use a generic placeholder or keep static image if we can match ID? 
-            // Ideally we want to see the image.
+            // 3. Image Handling
+            // Zoho API provides 'image_name' and 'image_document_id'.
+            // Valid URL format for authenticated image: https://www.zohoapis.in/books/v3/items/{item_id}/image?organization_id={org_id}
+            // BUT that requires an Auth Header.
+            // For PUBLIC access, we usually need the 'Documents' public link, or we have to proxy the image through our own API.
+            // Since we don't want to proxy 5MB images through Next.js serverless functions if possible, 
+            // we will use a workaround or check if we can get a public permalink.
+
+            // Current Solution: Use a local placeholder if no image, BUT if we have image_name, we assume it exists.
+            // We will point to a new route `/api/images/zoho?itemId=${item.item_id}` 
+            // calling this route will fetch the image from Zoho with Auth and pipe it to response.
+
             let image = '/placeholder.jpg';
-            if (category === 'Cameras') image = '/products/dome-cam.jpg'; // Just a better default
             if (item.image_name) {
-                // If we had a way to serve it, we would.
+                image = `/api/images/zoho?itemId=${item.item_id}`;
+            } else {
+                // Better default placeholders based on Category
+                if (category === 'Cameras') image = '/products/dome-cam.jpg';
+                if (category === 'Recorders') image = '/products/nvr.jpg';
             }
 
             return {
@@ -132,7 +152,7 @@ export async function getZohoProducts(): Promise<Product[]> {
                 category: category,
                 subCategory: subCategory,
                 image: image,
-                features: [], // Zoho description might contain features, could parse lines?
+                features: [],
                 stock: item.stock_on_hand > 0
             };
         });
@@ -321,6 +341,32 @@ export async function uploadZohoImage(itemId: string, file: File): Promise<boole
     } catch (e) {
         console.error("Image upload failed", e);
         return false;
+    }
+}
+
+/**
+ * Fetch Item Image Blob
+ */
+export async function getZohoItemImage(itemId: string): Promise<{ blob: Blob | null, type: string }> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return { blob: null, type: '' };
+
+    try {
+        const res = await fetch(`https://www.zohoapis.in/books/v3/items/${itemId}/image?organization_id=${ZOHO_ORG_ID}`, {
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`
+            },
+            next: { revalidate: 3600 } // Cache image for 1 hour
+        });
+
+        if (!res.ok) return { blob: null, type: '' };
+
+        const blob = await res.blob();
+        const type = res.headers.get('Content-Type') || 'image/jpeg';
+        return { blob, type };
+    } catch (e) {
+        console.error("Zoho Image Fetch Error", e);
+        return { blob: null, type: '' };
     }
 }
 
