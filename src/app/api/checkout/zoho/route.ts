@@ -1,51 +1,77 @@
 import { NextResponse } from 'next/server';
+import { createSalesOrder, findOrCreateContact, CustomerData } from '@/lib/zoho-inventory';
 
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { amount, currency = 'INR', description, customer } = body;
+        const { product, quantity = 1, shippingDetails } = body;
 
-        // TODO: Replace with your actual Env Variables
-        const apiKey = process.env.ZOHO_PAYMENTS_API_KEY;
-        const orgId = process.env.ZOHO_PAYMENTS_ORG_ID; // Your Organization ID
-        const apiDomain = 'https://payments.zoho.in'; // Use .in for India, .com for Global
-
-        if (!apiKey) {
-            console.warn("Zoho Payments API Key missing. Simulating response for UI testing.");
-            // Simulate a success for UI testing without real keys
-            // In reality, this would fail if no keys are present
-            return NextResponse.json({
-                payment_session_id: 'mock_session_' + Date.now(),
-                mock_mode: true
-            });
+        if (!product || !shippingDetails) {
+            return NextResponse.json(
+                { error: 'Missing product or shipping details' },
+                { status: 400 }
+            );
         }
 
-        // Official Zoho Create Payment Session Endpoint
-        const response = await fetch(`${apiDomain}/api/v1/payment_sessions`, {
-            method: 'POST',
-            headers: {
-                'Authorization': `Zoho-oauthtoken ${apiKey}`, // Check docs: might be 'Zoho-oauthtoken' or just 'Authorization' depending on Auth type
-                'Content-Type': 'application/json',
-                'X-ZOHO-ORG-ID': orgId || '',
+        // 1. Prepare Customer Data
+        const customerData: CustomerData = {
+            contact_name: shippingDetails.name,
+            email: shippingDetails.email,
+            phone: shippingDetails.phone,
+            billing_address: {
+                address: shippingDetails.address,
+                city: shippingDetails.city,
+                zip: shippingDetails.pincode,
+                country: 'India',
+                state: '' // Add state if you collect it
             },
-            body: JSON.stringify({
-                amount,
-                currency_code: currency,
-                description,
-                customer_id: customer?.id, // If you have a customer ID
-                // ... add other required fields per Zoho Docs
-            }),
+            shipping_address: {
+                address: shippingDetails.address,
+                city: shippingDetails.city,
+                zip: shippingDetails.pincode,
+                country: 'India',
+                state: ''
+            }
+        };
+
+        // 2. Find or Create Customer
+        console.log("Searching/Creating Customer...");
+        const customerId = await findOrCreateContact(customerData);
+
+        if (!customerId) {
+            return NextResponse.json(
+                { error: 'Failed to create or find customer in Zoho' },
+                { status: 500 }
+            );
+        }
+
+        // 3. Create Sales Order
+        console.log("Creating Sales Order for Customer:", customerId);
+        const orderResult = await createSalesOrder({
+            customer_id: customerId,
+            items: [{
+                item_id: product.id,
+                quantity: quantity,
+                rate: product.price
+            }],
+            notes: `Online Order for ${product.name}`
         });
 
-        const data = await response.json();
-
-        if (!response.ok) {
-            throw new Error(data.message || 'Failed to create payment session');
+        if (!orderResult.success) {
+            return NextResponse.json(
+                { error: orderResult.error || 'Failed to create Sales Order' },
+                { status: 500 }
+            );
         }
 
-        return NextResponse.json(data);
+        return NextResponse.json({
+            success: true,
+            orderId: orderResult.order_id,
+            message: 'Order created successfully'
+        });
 
     } catch (error: any) {
+        console.error("Checkout Error:", error);
         return NextResponse.json(
             { error: error.message || 'Internal Server Error' },
             { status: 500 }

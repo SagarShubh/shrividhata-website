@@ -31,11 +31,38 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
         });
     };
 
+
     const handlePayment = async (e: React.FormEvent) => {
         e.preventDefault();
-        // Payment integration deferred
-        alert("Payments are currently disabled. Please contact us for orders.");
-        setShowShippingModal(false);
+        setLoading(true);
+
+        try {
+            const res = await fetch('/api/checkout/zoho', {
+                method: 'POST',
+                headers: { 'Content-Type': 'application/json' },
+                body: JSON.stringify({
+                    product,
+                    quantity: 1,
+                    shippingDetails
+                })
+            });
+
+            const data = await res.json();
+
+            if (!res.ok) {
+                throw new Error(data.error || 'Something went wrong');
+            }
+
+            // Success!!
+            alert(`Order Placed Successfully! Reference Details: ${data.orderId || 'Saved'}`);
+            setShowShippingModal(false);
+
+        } catch (error: any) {
+            console.error("Checkout Failed:", error);
+            alert(`Order Failed: ${error.message}`);
+        } finally {
+            setLoading(false);
+        }
     };
 
     return (
@@ -99,17 +126,18 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             </ul>
                         </div>
 
+
                         <div className="flex flex-col sm:flex-row gap-4 mb-8">
-                            {/* <button
+                            <button
                                 className="flex-1 py-4 px-8 bg-blue-600 hover:bg-blue-700 text-white font-bold rounded-xl flex items-center justify-center gap-2 transition-all shadow-lg shadow-blue-600/25 active:scale-95"
                                 onClick={() => setShowShippingModal(true)}
                             >
                                 Buy Now
-                            </button> */}
-                            <button className="flex-1 py-4 px-8 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
+                            </button>
+                            {/* <button className="flex-1 py-4 px-8 bg-zinc-100 dark:bg-zinc-800 hover:bg-zinc-200 dark:hover:bg-zinc-700 text-zinc-900 dark:text-white font-semibold rounded-xl flex items-center justify-center gap-2 transition-all active:scale-95">
                                 <ShoppingCart size={20} />
                                 Add to Cart
-                            </button>
+                            </button> */}
                         </div>
 
                         <div className="grid grid-cols-2 gap-4 pt-8 border-t border-zinc-100 dark:border-zinc-800">
@@ -188,12 +216,12 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                                     {loading ? 'Processing...' : (
                                         <>
                                             <Lock size={18} />
-                                            Proceed to Secure Payment
+                                            Confirm Order
                                         </>
                                     )}
                                 </button>
                                 <p className="text-center text-xs text-zinc-500">
-                                    Trusted by 10,000+ Customers across India
+                                    We will contact you shortly to confirm payment on delivery or via UPI.
                                 </p>
                             </form>
                         </motion.div>

@@ -293,6 +293,7 @@ export async function deleteZohoProduct(id: string): Promise<{ success: boolean;
     }
 }
 
+
 /**
  * Upload Image to Zoho Item
  */
@@ -320,6 +321,141 @@ export async function uploadZohoImage(itemId: string, file: File): Promise<boole
     } catch (e) {
         console.error("Image upload failed", e);
         return false;
+    }
+}
+
+// --- Sales Order & Contact Logic ---
+
+export interface CreateSalesOrderData {
+    customer_id: string;
+    items: {
+        item_id: string;
+        quantity: number;
+        rate?: number; // Optional override
+    }[];
+    notes?: string;
+}
+
+export interface CustomerData {
+    contact_name: string;
+    company_name?: string;
+    email: string;
+    phone?: string;
+    billing_address?: {
+        address: string;
+        city: string;
+        zip: string;
+        state?: string;
+        country?: string;
+    };
+    shipping_address?: {
+        address: string;
+        city: string;
+        zip: string;
+        state?: string;
+        country?: string;
+    };
+}
+
+/**
+ * Find a contact by email or create a new one
+ */
+export async function findOrCreateContact(customer: CustomerData): Promise<string | null> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return null;
+
+    try {
+        // 1. Search for Contact
+        const searchUrl = `https://www.zohoapis.in/books/v3/contacts?organization_id=${ZOHO_ORG_ID}&email=${encodeURIComponent(customer.email)}`;
+        const searchRes = await fetch(searchUrl, {
+            headers: { 'Authorization': `Zoho-oauthtoken ${token}` }
+        });
+        const searchData = await searchRes.json();
+
+        if (searchData.code === 0 && searchData.contacts && searchData.contacts.length > 0) {
+            return searchData.contacts[0].contact_id;
+        }
+
+        // 2. Create if not found
+        const createUrl = `https://www.zohoapis.in/books/v3/contacts?organization_id=${ZOHO_ORG_ID}`;
+
+        const payload = {
+            contact_name: customer.contact_name,
+            company_name: customer.company_name || customer.contact_name,
+            contact_persons: [{
+                first_name: customer.contact_name.split(' ')[0],
+                last_name: customer.contact_name.split(' ').slice(1).join(' ') || '.',
+                email: customer.email,
+                phone: customer.phone,
+                is_primary_contact: true
+            }],
+            billing_address: customer.billing_address || {},
+            shipping_address: customer.shipping_address || {}
+        };
+
+        const createRes = await fetch(createUrl, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const createData = await createRes.json();
+
+        if (createData.code === 0) {
+            return createData.contact.contact_id;
+        } else {
+            console.error("Zoho Create Contact Error:", createData);
+            return null;
+        }
+
+    } catch (e) {
+        console.error("Zoho Contact Error:", e);
+        return null;
+    }
+}
+
+/**
+ * Create a Sales Order
+ */
+export async function createSalesOrder(orderData: CreateSalesOrderData): Promise<{ success: boolean; order_id?: string; error?: string }> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return { success: false, error: 'Authentication failed' };
+
+    const payload = {
+        customer_id: orderData.customer_id,
+        line_items: orderData.items.map(item => ({
+            item_id: item.item_id,
+            quantity: item.quantity,
+            rate: item.rate // If undefined, Zoho uses item default rate
+        })),
+        date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+        notes: orderData.notes,
+        is_inclusive_tax: false // Adjust based on your tax settings
+    };
+
+    try {
+        const res = await fetch(`https://www.zohoapis.in/books/v3/salesorders?organization_id=${ZOHO_ORG_ID}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`,
+                'Content-Type': 'application/json'
+            },
+            body: JSON.stringify(payload)
+        });
+
+        const data = await res.json();
+
+        if (data.code === 0) {
+            return { success: true, order_id: data.salesorder.salesorder_id };
+        } else {
+            return { success: false, error: data.message };
+        }
+    } catch (e) {
+        console.error("Create Sales Order Error:", e);
+        return { success: false, error: "Network Error" };
     }
 }
 
