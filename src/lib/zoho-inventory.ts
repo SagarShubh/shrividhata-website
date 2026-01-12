@@ -279,7 +279,16 @@ export async function getZohoProduct(id: string): Promise<Product | undefined> {
  */
 export async function createZohoProduct(formData: FormData): Promise<{ success: boolean; error?: string }> {
     const token = await getAccessToken();
-    if (!token || !ZOHO_ORG_ID) return { success: false, error: 'Authentication failed' };
+
+    // Detailed Debugging for Production
+    if (!token) {
+        console.error("Create Product Failed: Missing Access Token. Check Client ID/Secret/Refresh Token.");
+        return { success: false, error: 'Auth Failed: No Access Token' };
+    }
+    if (!ZOHO_ORG_ID) {
+        console.error("Create Product Failed: Missing Organization ID.");
+        return { success: false, error: 'Auth Failed: Missing Org ID' };
+    }
 
     const name = formData.get('name') as string;
     const rate = parseFloat(formData.get('price') as string);
