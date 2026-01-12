@@ -186,7 +186,22 @@ export async function getZohoProducts(): Promise<Product[]> {
         // If we found 0 items, maybe return static? Or just empty? 
         // If integration works but has 0 items, we return empty. 
         // If integration failed, we returned static above.
-        return mappedProducts.length > 0 ? mappedProducts : staticProducts;
+
+        // Debug Information:
+        console.log(`Zoho fetched ${mappedProducts.length} items.`);
+
+        // MERGE STRATEGY: 
+        // Return Zoho products. If Zoho has < 4 products (maybe just testing?), 
+        // append static products so the shop doesn't look empty.
+        // This is safer for production until you have full inventory loaded.
+
+        if (mappedProducts.length > 0) {
+            // Filter out static products that might have same ID as Zoho ones to avoid dupes?
+            // (Unlikely since Zoho IDs are numbers, our static IDs are strings 'cam-001')
+            return [...mappedProducts, ...staticProducts];
+        }
+
+        return staticProducts;
 
     } catch (error) {
         console.error("Failed to fetch products from Zoho:", error);
