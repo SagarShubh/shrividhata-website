@@ -28,23 +28,28 @@ interface ZohoItem {
  * Exchanges Refresh Token for Access Token
  */
 async function getAccessToken() {
+    // Read directly from process.env at runtime to avoid module-scope caching issues
+    const clientId = process.env.ZOHO_CLIENT_ID;
+    const clientSecret = process.env.ZOHO_CLIENT_SECRET;
+    const refreshToken = process.env.ZOHO_REFRESH_TOKEN;
+
     if (cachedAccessToken && Date.now() < tokenExpiry) {
         return cachedAccessToken;
     }
 
-    if (!ZOHO_CLIENT_ID || !ZOHO_REFRESH_TOKEN || !ZOHO_CLIENT_SECRET) {
-        console.warn('Zoho Credentials missing in environment');
-        return null; // Return null instead of throwing to avoid crashing
+    if (!clientId || !refreshToken || !clientSecret) {
+        console.error('Zoho Credentials missing in environment (Runtime Check)');
+        return null;
     }
 
-    const url = `https://accounts.zoho.in/oauth/v2/token?refresh_token=${ZOHO_REFRESH_TOKEN}&client_id=${ZOHO_CLIENT_ID}&client_secret=${ZOHO_CLIENT_SECRET}&grant_type=refresh_token`;
+    const url = `https://accounts.zoho.in/oauth/v2/token?refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}&grant_type=refresh_token`;
 
     try {
-        const res = await fetch(url, { method: 'POST' });
+        const res = await fetch(url, { method: 'POST', cache: 'no-store' });
         const data = await res.json();
 
         if (data.error) {
-            console.error("Zoho Auth Error:", data.error);
+            console.error("Zoho Auth Error (getAccessToken):", data);
             return null;
         }
 
