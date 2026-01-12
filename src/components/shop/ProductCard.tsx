@@ -11,8 +11,10 @@ interface ProductCardProps {
 }
 
 export default function ProductCard({ product }: ProductCardProps) {
-    // Placeholder image if the specific one is missing (for development)
-    const imageSrc = product.image.startsWith('/') ? product.image : '/placeholder.jpg';
+    // Use the product image or a safe fallback
+    const imageSrc = product.image && product.image.startsWith('/')
+        ? product.image
+        : '/products/dome-cam.jpg';
 
     return (
         <motion.div
