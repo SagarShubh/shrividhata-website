@@ -115,33 +115,59 @@ export async function getZohoProducts(): Promise<Product[]> {
             // 2. Fallback to Name Analysis if CF is missing/empty
             else {
                 const name = item.name.toLowerCase();
-                if (name.includes('camera') || name.includes('dome') || name.includes('bullet')) category = 'Cameras';
+                if (name.includes('camera') || name.includes('dome') || name.includes('bullet') || name.includes('ptz')) category = 'Cameras';
                 else if (name.includes('nvr') || name.includes('dvr')) category = 'Recorders';
                 else if (name.includes('hdd') || name.includes('wd') || name.includes('seagate')) category = 'Storage';
-                else category = 'Accessories';
+                else if (name.includes('switch') || name.includes('router') || name.includes('cable') || name.includes('cat6')) category = 'Networking';
+                else category = 'Accessories'; // Default
             }
 
-            const subCategory = (item.cf_subcategory as SubCategory) || 'Connector';
+            // SubCategory Logic
+            let subCategory: SubCategory = (item.cf_subcategory as SubCategory);
+
+            if (!subCategory) {
+                const name = item.name.toLowerCase();
+                if (category === 'Cameras') {
+                    if (name.includes('dome')) subCategory = 'Dome Camera';
+                    else if (name.includes('bullet')) subCategory = 'Bullet Camera';
+                    else if (name.includes('ptz')) subCategory = 'PTZ Camera';
+                    else if (name.includes('wifi')) subCategory = 'WiFi Camera';
+                    else subCategory = 'Dome Camera';
+                } else if (category === 'Recorders') {
+                    if (name.includes('nvr')) subCategory = 'NVR';
+                    else if (name.includes('dvr')) subCategory = 'DVR';
+                    else subCategory = 'NVR';
+                } else if (category === 'Storage') {
+                    subCategory = 'Hard Drive';
+                } else if (category === 'Networking') {
+                    if (name.includes('switch')) subCategory = 'Switch';
+                    else if (name.includes('router')) subCategory = 'Router';
+                    else subCategory = 'Cable';
+                } else {
+                    if (name.includes('power')) subCategory = 'Power Supply';
+                    else if (name.includes('cable')) subCategory = 'Cable';
+                    else subCategory = 'Connector';
+                }
+            }
 
             // 3. Image Handling
-            // Zoho API provides 'image_name' and 'image_document_id'.
-            // Valid URL format for authenticated image: https://www.zohoapis.in/books/v3/items/{item_id}/image?organization_id={org_id}
-            // BUT that requires an Auth Header.
-            // For PUBLIC access, we usually need the 'Documents' public link, or we have to proxy the image through our own API.
-            // Since we don't want to proxy 5MB images through Next.js serverless functions if possible, 
-            // we will use a workaround or check if we can get a public permalink.
+            // Default to a valid existing image based on category to avoid 404s
+            let image = '/products/connectors.jpg';
+            if (category === 'Cameras') image = '/products/dome-cam.jpg';
+            if (category === 'Recorders') image = '/products/nvr-16ch.jpg';
+            if (category === 'Storage') image = '/products/hdd-1tb.jpg';
+            if (category === 'Networking') image = '/products/cat6-cable.jpg';
 
-            // Current Solution: Use a local placeholder if no image, BUT if we have image_name, we assume it exists.
-            // We will point to a new route `/api/images/zoho?itemId=${item.item_id}` 
-            // calling this route will fetch the image from Zoho with Auth and pipe it to response.
-
-            let image = '/placeholder.jpg';
+            // Override with Real Image if available
             if (item.image_name) {
                 image = `/api/images/zoho?itemId=${item.item_id}`;
             } else {
-                // Better default placeholders based on Category
-                if (category === 'Cameras') image = '/products/dome-cam.jpg';
-                if (category === 'Recorders') image = '/products/nvr.jpg';
+                // Secondary check: Refine default images based on subCategory for better generic look
+                if (subCategory === 'Bullet Camera') image = '/products/bullet-cam.jpg';
+                if (subCategory === 'PTZ Camera') image = '/products/ptz-cam.jpg';
+                if (subCategory === 'DVR') image = '/products/dvr-8ch.jpg';
+                if (subCategory === 'Hard Drive') image = '/products/hdd-1tb.jpg';
+                if (subCategory === 'Cable') image = '/products/cat6-cable.jpg';
             }
 
             return {
