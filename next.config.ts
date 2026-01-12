@@ -12,6 +12,10 @@ const nextConfig: NextConfig = {
     ],
     localPatterns: [
       {
+        pathname: '/**',
+        search: '',
+      },
+      {
         pathname: '/api/images/zoho/**',
         search: '?itemId=*'
       }
