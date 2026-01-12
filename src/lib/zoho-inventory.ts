@@ -171,7 +171,7 @@ export async function getZohoProducts(): Promise<Product[]> {
             }
 
             return {
-                id: item.item_id,
+                id: String(item.item_id),
                 name: item.name,
                 description: item.description || '',
                 price: item.rate,
@@ -215,7 +215,8 @@ export async function getZohoProduct(id: string): Promise<Product | undefined> {
     // In efficient real-world, we would fetch single item from API:
     // GET https://inventory.zoho.in/api/v1/items/${id}
     // But since we have a small shop, fetching all is fine for now and easier for caching.
-    return allProducts.find(p => p.id === id);
+    // Ensure both are treated as strings for strict comparison
+    return allProducts.find(p => String(p.id) === String(id));
 }
 
 /**
