@@ -17,22 +17,65 @@ export async function GET() {
     };
 
     // 2. Try to manually fetch token to see the EXACT error
-    let zohoResponse = null;
+    let tokenResponse = null;
 
-    if (clientId && clientSecret && refreshToken) {
-        try {
+    try {
+        if (clientId && clientSecret && refreshToken) {
             // TRY .IN (India DC)
             const url = `https://accounts.zoho.in/oauth/v2/token?refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}&grant_type=refresh_token`;
             const res = await fetch(url, { method: 'POST' });
-            zohoResponse = await res.json();
-        } catch (e: any) {
-            zohoResponse = { error: "Fetch Failed", details: e.message };
+            tokenResponse = await res.json();
+        } else {
+            tokenResponse = { error: "Missing environment variables for token refresh." };
         }
-    }
 
-    return NextResponse.json({
-        message: "Zoho Debug Report",
-        envStatus,
-        zohoResponse
-    });
+        // 2. Try to fetch Items to verify scopes and data
+        let itemsStatus = "Not Attempted";
+        let fetchedItems = [];
+
+        if (tokenResponse && tokenResponse.access_token && orgId) {
+            try {
+                // Fetch active items
+                const itemsRes = await fetch(`https://www.zohoapis.in/books/v3/items?organization_id=${orgId}&status=active`, {
+                    headers: {
+                        'Authorization': `Zoho-oauthtoken ${tokenResponse.access_token}`,
+                    },
+                    cache: 'no-store'
+                });
+
+                const itemsData = await itemsRes.json();
+                if (itemsData.code === 0) {
+                    itemsStatus = "Success";
+                    fetchedItems = itemsData.items.slice(0, 5).map((i: any) => ({
+                        id: i.item_id,
+                        name: i.name,
+                        status: i.status,
+                        has_image: !!i.image_name
+                    }));
+                } else {
+                    itemsStatus = `Failed: ${itemsData.message}`;
+                }
+
+            } catch (err: any) {
+                itemsStatus = `Error: ${err.message}`;
+            }
+        } else if (!orgId) {
+            itemsStatus = "Skipped: ZOHO_INVENTORY_ORG_ID is missing.";
+        } else {
+            itemsStatus = "Skipped: No access token available.";
+        }
+
+
+        return NextResponse.json({
+            message: "Zoho Debug Report",
+            envStatus,
+            tokenStatus: tokenResponse && tokenResponse.error ? "Failed" : "Success",
+            itemsStatus,
+            sampleItems: fetchedItems,
+            zohoAuthResponse: tokenResponse
+        });
+
+    } catch (error: any) {
+        return NextResponse.json({ error: error.message }, { status: 500 });
+    }
 }
