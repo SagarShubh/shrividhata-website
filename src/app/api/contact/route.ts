@@ -6,6 +6,13 @@ const resend = new Resend(process.env.RESEND_API_KEY);
 
 export async function POST(request: Request) {
     try {
+        const apiKey = process.env.RESEND_API_KEY;
+        if (!apiKey) {
+            console.error("CRITICAL: RESEND_API_KEY is missing in environment variables!");
+            return NextResponse.json({ success: false, error: "Server Configuration Error: Missing Email API Key" }, { status: 500 });
+        }
+        console.log(`Using Resend Key: ${apiKey.slice(0, 5)}...`);
+
         const data = await request.json();
         const { name, email, phone, message } = data;
 
