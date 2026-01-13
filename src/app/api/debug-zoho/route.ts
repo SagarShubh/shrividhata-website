@@ -51,7 +51,8 @@ export async function GET() {
                         name: i.name,
                         status: i.status,
                         has_image: !!i.image_name,
-                        cf_product_image: i.cf_product_image || 'N/A'
+                        cf_product_image: i.cf_product_image || 'N/A',
+                        cf_image: i.cf_image || 'N/A'
                     }));
                 } else {
                     itemsStatus = `Failed: ${itemsData.message}`;

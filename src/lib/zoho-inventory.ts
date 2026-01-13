@@ -21,7 +21,8 @@ interface ZohoItem {
     stock_on_hand: number;
     cf_category?: string; // Custom Field for Category
     cf_subcategory?: string; // Custom Field for SubCategory
-    cf_product_image?: string; // Custom Field for Image
+    cf_product_image?: string; // Custom Field for Image (Version A)
+    cf_image?: string; // Custom Field for Image (Version B - Likely default if name is 'Image')
     // Add other fields as necessary
 }
 
@@ -166,10 +167,12 @@ export async function getZohoProducts(): Promise<Product[]> {
 
             // Override with Real Image if available
             // Override with Real Image if available
-            // Priority 1: Custom Field (cf_product_image)
-            if (item.cf_product_image) {
-                if (item.cf_product_image.startsWith('http')) {
-                    image = item.cf_product_image;
+            // Priority 1: Custom Field (cf_product_image OR cf_image)
+            const customImage = item.cf_product_image || item.cf_image;
+
+            if (customImage) {
+                if (customImage.startsWith('http')) {
+                    image = customImage;
                 } else {
                     // If it's not a URL, assume it acts like a flag or filename for the default image
                     image = `/api/images/zoho?itemId=${item.item_id}`;
@@ -269,10 +272,12 @@ export async function getZohoProduct(id: string): Promise<Product | undefined> {
                 let image = '/products/dome-cam.jpg';
 
                 // Override with Real Image if available
-                // Priority 1: Custom Field (cf_product_image)
-                if (item.cf_product_image) {
-                    if (item.cf_product_image.startsWith('http')) {
-                        image = item.cf_product_image;
+                // Priority 1: Custom Field (cf_product_image OR cf_image)
+                const customImage = item.cf_product_image || item.cf_image;
+
+                if (customImage) {
+                    if (customImage.startsWith('http')) {
+                        image = customImage;
                     } else {
                         // If it's not a URL, assume it acts like a flag or filename for the default image
                         image = `/api/images/zoho?itemId=${item.item_id}`;
