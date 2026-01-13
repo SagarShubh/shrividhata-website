@@ -31,7 +31,7 @@ export async function POST(request: Request) {
         // Send Email to Admin (YOU)
         const { data: emailData, error } = await resend.emails.send({
             from: "ShriVidhata Shop <onboarding@resend.dev>",
-            to: ["contacts@shrividhta.com"],
+            to: ["shrividhata.official@gmail.com"],
             subject: `💰 New Order Recieved! ₹${amount} - ${product}`,
             html: `
                 <div style="font-family: Arial, sans-serif; padding: 20px; max-width: 600px; margin: 0 auto;">

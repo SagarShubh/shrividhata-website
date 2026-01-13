@@ -71,7 +71,7 @@ export async function POST(request: Request) {
 
             await resend.emails.send({
                 from: "ShriVidhata Shop <onboarding@resend.dev>",
-                to: ["contacts@shrividhata.com"], // Corrected domain spelling
+                to: ["shrividhata.official@gmail.com"], // Testing Mode: Only registered email allowed
                 subject: `💰 New Order: ${product.name}`,
                 html: `
                     <h1>New Order Recieved!</h1>
