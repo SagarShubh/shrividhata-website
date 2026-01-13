@@ -25,7 +25,8 @@ export function Contact() {
             if (response.ok) {
                 setSuccess(true);
             } else {
-                alert("Something went wrong. Please try again or call us directly.");
+                const errorData = await response.json();
+                alert(`Error: ${errorData.error || errorData.message || "Something went wrong"}`);
             }
         } catch (error) {
             console.error(error);
