@@ -47,7 +47,8 @@ async function getAccessToken() {
     const url = `https://accounts.zoho.in/oauth/v2/token?refresh_token=${refreshToken}&client_id=${clientId}&client_secret=${clientSecret}&grant_type=refresh_token`;
 
     try {
-        const res = await fetch(url, { method: 'POST', cache: 'no-store' });
+        // Cache token request for 55 mins (3300s) to align with Next.js static generation and avoid 'no-store' build error
+        const res = await fetch(url, { method: 'POST', next: { revalidate: 3300 } });
         const data = await res.json();
 
         if (data.error) {
