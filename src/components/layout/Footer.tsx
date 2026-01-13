@@ -42,6 +42,7 @@ export function Footer() {
                             <FooterLink href="/#services" label="Services" />
                             <FooterLink href="/#brands" label="Brands" />
                             <FooterLink href="/#portfolio" label="Our Work" />
+                            <FooterLink href="/track-order" label="Track Order" />
                             <FooterLink href="/#contact" label="Contact" />
                         </ul>
                     </div>
