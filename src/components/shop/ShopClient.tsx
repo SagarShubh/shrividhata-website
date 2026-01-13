@@ -62,7 +62,7 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                     <div className="flex flex-col lg:flex-row gap-4 justify-between items-center">
 
                         {/* Search */}
-                        <div className="relative w-full lg:w-80 order-1 lg:order-1">
+                        <div className="relative w-full lg:w-80 order-1">
                             <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400" size={18} />
                             <input
                                 type="text"
@@ -98,91 +98,69 @@ export default function ShopClient({ initialProducts }: ShopClientProps) {
                             ))}
                         </div>
 
-                        {/* Mobile Controls & Sort */}
-                        <div className="flex w-full lg:w-auto gap-2 order-3 lg:order-3">
-                            {/* Mobile Filter Toggle */}
-                            <button
-                                className="lg:hidden p-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 flex-1 flex items-center justify-center gap-2 font-medium"
-                                onClick={() => setShowFilters(!showFilters)}
-                            >
-                                <Filter size={18} />
-                                <span className='text-sm'>Filter</span>
-                            </button>
-
-                            {/* Sort Dropdown */}
-                            <div className="relative flex-1 lg:flex-none">
-                                <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
-                                    <ArrowUpDown size={16} />
-                                </div>
-                                <select
-                                    value={sortOption}
-                                    onChange={(e) => setSortOption(e.target.value as SortOption)}
-                                    className="w-full lg:w-48 pl-10 pr-4 py-2.5 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-none text-sm text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
-                                    style={{ backgroundImage: 'none' }} // Remove default arrow in some browsers
-                                >
-                                    <option value="price-asc">Price: Low to High</option>
-                                    <option value="price-desc">Price: High to Low</option>
-                                    <option value="name-asc">Name: A to Z</option>
-                                </select>
+                        {/* Sort Dropdown */}
+                        <div className="relative w-full lg:w-auto order-3 lg:w-48">
+                            <div className="absolute left-3 top-1/2 -translate-y-1/2 text-zinc-400 pointer-events-none">
+                                <ArrowUpDown size={16} />
                             </div>
+                            <select
+                                value={sortOption}
+                                onChange={(e) => setSortOption(e.target.value as SortOption)}
+                                className="w-full pl-10 pr-4 py-2 rounded-xl bg-zinc-100 dark:bg-zinc-800 border-none text-sm text-zinc-700 dark:text-zinc-300 focus:ring-2 focus:ring-blue-500 outline-none appearance-none cursor-pointer"
+                                style={{ backgroundImage: 'none' }}
+                            >
+                                <option value="price-asc">Price: Low to High</option>
+                                <option value="price-desc">Price: High to Low</option>
+                                <option value="name-asc">Name: A to Z</option>
+                            </select>
                         </div>
                     </div>
 
-                    {/* Mobile Categories (Collapsible) */}
-                    <AnimatePresence>
-                        {showFilters && (
-                            <motion.div
-                                initial={{ height: 0, opacity: 0 }}
-                                animate={{ height: 'auto', opacity: 1 }}
-                                exit={{ height: 0, opacity: 0 }}
-                                className="lg:hidden overflow-hidden"
+                    {/* Mobile Categories (Horizontal Scroll) */}
+                    <div className="lg:hidden w-full overflow-x-auto pb-2 -mx-4 px-4 flex gap-2 no-scrollbar mt-4 border-t border-zinc-100 dark:border-zinc-800 pt-4">
+                        <button
+                            onClick={() => setSelectedCategory('All')}
+                            className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${selectedCategory === 'All'
+                                ? 'bg-blue-600 text-white shadow-md'
+                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700'
+                                }`}
+                        >
+                            All
+                        </button>
+                        {categories.map((cat) => (
+                            <button
+                                key={cat}
+                                onClick={() => setSelectedCategory(cat)}
+                                className={`px-4 py-2 rounded-full text-sm font-medium whitespace-nowrap transition-all flex-shrink-0 ${selectedCategory === cat
+                                    ? 'bg-blue-600 text-white shadow-md'
+                                    : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400 border border-zinc-200 dark:border-zinc-700'
+                                    }`}
                             >
-                                <div className="flex flex-wrap gap-2 pt-4 pb-2 border-t border-zinc-200 dark:border-zinc-800 mt-4">
-                                    <button
-                                        onClick={() => setSelectedCategory('All')}
-                                        className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${selectedCategory === 'All'
-                                            ? 'bg-blue-600 text-white'
-                                            : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                                            }`}
-                                    >
-                                        All
-                                    </button>
-                                    {categories.map((cat) => (
-                                        <button
-                                            key={cat}
-                                            onClick={() => setSelectedCategory(cat)}
-                                            className={`px-3 py-1.5 rounded-full text-xs font-medium transition-all ${selectedCategory === cat
-                                                ? 'bg-blue-600 text-white'
-                                                : 'bg-zinc-100 dark:bg-zinc-800 text-zinc-600 dark:text-zinc-400'
-                                                }`}
-                                        >
-                                            {cat}
-                                        </button>
-                                    ))}
-                                </div>
-                            </motion.div>
-                        )}
-                    </AnimatePresence>
+                                {cat}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-
-                {/* Product Grid */}
-                <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                    {sortedProducts.length > 0 ? (
-                        sortedProducts.map((product) => (
-                            <ProductCard key={product.id} product={product} />
-                        ))
-                    ) : (
-                        <div className="col-span-full py-20 text-center text-zinc-500">
-                            <div className="inline-block p-4 rounded-full bg-zinc-100 dark:bg-zinc-900 mb-4">
-                                <Search size={32} />
-                            </div>
-                            <h3 className="text-xl font-bold mb-2">No products found</h3>
-                            <p>Try adjusting your search or category filter.</p>
-                        </div>
-                    )}
-                </div>
-
             </div>
+
+            {/* Product Grid */}
+            <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
+                {sortedProducts.length > 0 ? (
+                    sortedProducts.map((product) => (
+                        <ProductCard key={product.id} product={product} />
+                    ))
+                ) : (
+                    <div className="col-span-full py-20 text-center text-zinc-500">
+                        <div className="inline-block p-4 rounded-full bg-zinc-100 dark:bg-zinc-900 mb-4">
+                            <Search size={32} />
+                        </div>
+                        <h3 className="text-xl font-bold mb-2">No products found</h3>
+                        <p>Try adjusting your search or category filter.</p>
+                    </div>
+                )}
+            </div>
+
         </div>
+        </div >
     );
 }
