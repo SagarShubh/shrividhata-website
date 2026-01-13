@@ -500,7 +500,11 @@ export async function getZohoItemImage(itemId: string): Promise<{ blob: Blob | n
             next: { revalidate: 3600 } // Cache image for 1 hour
         });
 
-        if (!res.ok) return { blob: null, type: '' };
+        if (!res.ok) {
+            const errorText = await res.text();
+            console.error(`Zoho Image Fetch Failed: ${res.status} ${res.statusText}`, errorText);
+            return { blob: null, type: '' };
+        }
 
         const blob = await res.blob();
         const type = res.headers.get('Content-Type') || 'image/jpeg';
