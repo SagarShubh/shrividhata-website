@@ -70,8 +70,8 @@ export async function POST(request: Request) {
             const resend = new Resend(process.env.RESEND_API_KEY);
 
             await resend.emails.send({
-                from: "ShriVidhata Shop <onboarding@resend.dev>",
-                to: ["shrividhata.official@gmail.com"], // Testing Mode: Only registered email allowed
+                from: "ShriVidhata Shop <contacts@shrividhata.com>",
+                to: ["contacts@shrividhata.com"],
                 subject: `💰 New Order: ${product.name}`,
                 html: `
                     <h1>New Order Recieved!</h1>
