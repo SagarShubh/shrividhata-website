@@ -24,12 +24,12 @@ export default function ProductCard({ product }: ProductCardProps) {
             className="group relative bg-white dark:bg-zinc-900 rounded-2xl overflow-hidden border border-zinc-200 dark:border-zinc-800 hover:border-blue-500/50 hover:shadow-xl hover:shadow-blue-500/10 transition-all duration-300"
         >
             {/* Imagine Container */}
-            <div className="aspect-square relative overflow-hidden bg-zinc-100 dark:bg-zinc-800">
+            <div className="aspect-square relative overflow-hidden bg-zinc-100 dark:bg-zinc-800 p-4">
                 <Image
                     src={imageSrc}
                     alt={product.name}
                     fill
-                    className="object-cover transition-transform duration-500 group-hover:scale-110"
+                    className="object-contain transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
                     unoptimized // Bypass Next.js optimization to load API proxy images directly
                 />

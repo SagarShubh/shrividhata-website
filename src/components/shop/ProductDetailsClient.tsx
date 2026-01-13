@@ -86,13 +86,13 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                     <motion.div
                         initial={{ opacity: 0, x: -20 }}
                         animate={{ opacity: 1, x: 0 }}
-                        className="relative aspect-square rounded-3xl overflow-hidden bg-zinc-100 dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800"
+                        className="relative aspect-square rounded-3xl overflow-hidden bg-white dark:bg-zinc-900 border border-zinc-200 dark:border-zinc-800 p-6 flex items-center justify-center"
                     >
                         <Image
                             src={imageSrc}
                             alt={product.name}
                             fill
-                            className="object-cover"
+                            className="object-contain"
                             sizes="(max-width: 768px) 100vw, 50vw"
                             priority
                             unoptimized // Bypass Next.js optimization for direct API fetch
