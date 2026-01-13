@@ -24,9 +24,12 @@ export function Contact() {
 
             if (response.ok) {
                 setSuccess(true);
+            } else {
+                alert("Something went wrong. Please try again or call us directly.");
             }
         } catch (error) {
             console.error(error);
+            alert("Network error. Please try again.");
         } finally {
             setLoading(false);
         }
