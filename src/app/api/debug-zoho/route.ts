@@ -50,7 +50,8 @@ export async function GET() {
                         id: i.item_id,
                         name: i.name,
                         status: i.status,
-                        has_image: !!i.image_name
+                        has_image: !!i.image_name,
+                        cf_product_image: i.cf_product_image || 'N/A'
                     }));
                 } else {
                     itemsStatus = `Failed: ${itemsData.message}`;
