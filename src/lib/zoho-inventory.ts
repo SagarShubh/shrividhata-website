@@ -23,6 +23,9 @@ interface ZohoItem {
     cf_subcategory?: string; // Custom Field for SubCategory
     cf_product_image?: string; // Custom Field for Image (Version A)
     cf_image?: string; // Custom Field for Image (Version B - Likely default if name is 'Image')
+    brand?: string;
+    manufacturer?: string;
+    cf_brand?: string;
     // Add other fields as necessary
 }
 
@@ -200,7 +203,8 @@ export async function getZohoProducts(): Promise<Product[]> {
                 subCategory: subCategory,
                 image: image,
                 features: [],
-                stock: item.stock_on_hand > 0
+                stock: item.stock_on_hand > 0,
+                brand: item.cf_brand || item.brand || item.manufacturer || 'Generic'
             };
         });
 
@@ -298,7 +302,8 @@ export async function getZohoProduct(id: string): Promise<Product | undefined> {
                     subCategory, // Might be inaccurate without full logic, but better than 404
                     image,
                     stock: item.stock_on_hand > 0,
-                    features: [] // Empty for now
+                    features: [], // Empty for now
+                    brand: item.cf_brand || item.brand || item.manufacturer || 'Generic'
                 };
             }
         }
@@ -604,6 +609,51 @@ export async function findOrCreateContact(customer: CustomerData): Promise<strin
 
     } catch (e) {
         console.error("Zoho Contact Error:", e);
+        return null;
+    }
+}
+
+// --- Sales Order Tracking ---
+
+export async function getSalesOrder(orderId: string) {
+    const accessToken = await getAccessToken();
+
+    try {
+        const response = await fetch(`https://inventory.zoho.in/api/v1/salesorders/${orderId}?organization_id=${process.env.ZOHO_INVENTORY_ORG_ID}`, {
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${accessToken}`
+            },
+            next: { revalidate: 0 } // Always fresh
+        });
+
+        if (!response.ok) {
+            const errorText = await response.text();
+            console.error('Zoho API Error (Get Sales Order):', errorText);
+            return null;
+        }
+
+        const data = await response.json();
+        if (data.code === 0 && data.salesorder) {
+            return {
+                id: data.salesorder.salesorder_id,
+                number: data.salesorder.salesorder_number,
+                status: data.salesorder.status,
+                date: data.salesorder.date,
+                total: data.salesorder.total,
+                customer_name: data.salesorder.customer_name,
+                items: data.salesorder.line_items.map((item: any) => ({
+                    name: item.name,
+                    quantity: item.quantity,
+                    rate: item.rate,
+                    total: item.item_total
+                })),
+                shipment_details: data.salesorder.packages ? data.salesorder.packages : [] // Simplify for now
+            };
+        }
+        return null;
+
+    } catch (error) {
+        console.error('Failed to get sales order:', error);
         return null;
     }
 }

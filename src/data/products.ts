@@ -24,6 +24,7 @@ export interface Product {
     image: string;
     features: string[];
     stock: boolean;
+    brand?: string;
     stripePriceId?: string; // For future integration
 }
 

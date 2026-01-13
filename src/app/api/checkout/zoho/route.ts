@@ -4,11 +4,11 @@ import { createSalesOrder, findOrCreateContact, CustomerData } from '@/lib/zoho-
 export async function POST(request: Request) {
     try {
         const body = await request.json();
-        const { product, quantity = 1, shippingDetails } = body;
+        const { items, shippingDetails } = body;
 
-        if (!product || !shippingDetails) {
+        if (!items || items.length === 0 || !shippingDetails) {
             return NextResponse.json(
-                { error: 'Missing product or shipping details' },
+                { error: 'Missing items or shipping details' },
                 { status: 400 }
             );
         }
@@ -23,7 +23,7 @@ export async function POST(request: Request) {
                 city: shippingDetails.city,
                 zip: shippingDetails.pincode,
                 country: 'India',
-                state: '' // Add state if you collect it
+                state: ''
             },
             shipping_address: {
                 address: shippingDetails.address,
@@ -47,14 +47,17 @@ export async function POST(request: Request) {
 
         // 3. Create Sales Order
         console.log("Creating Sales Order for Customer:", customerId);
+
+        const salesOrderItems = items.map((item: any) => ({
+            item_id: item.id,
+            quantity: item.quantity,
+            rate: item.price
+        }));
+
         const orderResult = await createSalesOrder({
             customer_id: customerId,
-            items: [{
-                item_id: product.id,
-                quantity: quantity,
-                rate: product.price
-            }],
-            notes: `Online Order for ${product.name}`
+            items: salesOrderItems,
+            notes: `Online Order via Store Checkout`
         });
 
         if (!orderResult.success) {
@@ -69,17 +72,24 @@ export async function POST(request: Request) {
             const { Resend } = require('resend');
             const resend = new Resend(process.env.RESEND_API_KEY);
 
+            const itemsListHtml = items.map((item: any) =>
+                `<li>${item.name} x ${item.quantity} - ₹${item.price}</li>`
+            ).join('');
+
             await resend.emails.send({
                 from: "ShriVidhata Shop <contacts@shrividhata.com>",
                 to: ["contacts@shrividhata.com"],
-                subject: `💰 New Order: ${product.name}`,
+                subject: `💰 New Order Recieved! (ID: ${orderResult.order_id})`,
                 html: `
                     <h1>New Order Recieved!</h1>
                     <p><strong>Order ID:</strong> ${orderResult.order_id}</p>
                     <p><strong>Customer:</strong> ${shippingDetails.name} (${shippingDetails.phone})</p>
-                    <p><strong>Product:</strong> ${product.name}</p>
-                    <p><strong>Price:</strong> ₹${product.price}</p>
-                    <br/>
+                    
+                    <h3>Items:</h3>
+                    <ul>
+                        ${itemsListHtml}
+                    </ul>
+                    
                     <a href="https://inventory.zoho.in/app/items" style="padding: 10px 20px; background: #0070f3; color: white; text-decoration: none; border-radius: 5px;">View in Zoho Inventory</a>
                 `
             });

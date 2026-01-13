@@ -2,8 +2,9 @@
 
 import { useState } from "react";
 import Link from "next/link";
-import { Menu, X, ShieldCheck } from "lucide-react";
+import { Menu, X, ShieldCheck, ShoppingCart } from "lucide-react";
 import { motion, AnimatePresence } from "framer-motion";
+import { useCart } from "@/context/CartContext";
 
 const navLinks = [
     { name: "Home", href: "/" },
@@ -16,6 +17,7 @@ const navLinks = [
 
 export function Header() {
     const [isOpen, setIsOpen] = useState(false);
+    const { cartCount } = useCart();
 
     return (
         <header className="fixed top-0 left-0 right-0 z-50 bg-white/90 backdrop-blur-md border-b border-gray-100 dark:bg-slate-900/90 dark:border-slate-800 transition-colors duration-300">
@@ -54,7 +56,25 @@ export function Header() {
                         >
                             Get a Quote
                         </Link>
+
+                        <Link href="/cart" className="relative p-2 text-gray-600 hover:text-secondary dark:text-gray-300 transition-colors">
+                            <ShoppingCart className="w-6 h-6" />
+                            {cartCount > 0 && (
+                                <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full shadow-sm">
+                                    {cartCount}
+                                </span>
+                            )}
+                        </Link>
                     </nav>
+
+                    <Link href="/cart" className="md:hidden relative p-2 mr-2 text-gray-600 hover:text-secondary dark:text-gray-300">
+                        <ShoppingCart className="w-6 h-6" />
+                        {cartCount > 0 && (
+                            <span className="absolute -top-1 -right-1 bg-red-500 text-white text-[10px] font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                                {cartCount}
+                            </span>
+                        )}
+                    </Link>
 
                     {/* Mobile Menu Button */}
                     <button

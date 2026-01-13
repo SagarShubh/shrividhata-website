@@ -21,6 +21,7 @@ import { Header } from "@/components/layout/Header";
 import { Footer } from "@/components/layout/Footer";
 import { ScrollToTop } from "@/components/ui/ScrollToTop";
 import { ScrollToTopOnMount } from "@/components/ui/ScrollToTopOnMount";
+import { CartProvider } from "@/context/CartContext";
 import { FloatingWhatsApp } from "@/components/ui/FloatingWhatsApp";
 import { FloatingCTA } from "@/components/ui/FloatingCTA";
 
@@ -32,17 +33,19 @@ export default function RootLayout({
   return (
     <html lang="en" className="scroll-smooth">
       <body
-        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-slate-50`}
+        className={`${geistSans.variable} ${geistMono.variable} antialiased min-h-screen flex flex-col bg-slate-50 selection:bg-blue-500/30`}
       >
-        <Header />
-        <main className="flex-1 mt-16 sm:mt-20">
-          {children}
-        </main>
-        <Footer />
-        <ScrollToTop />
-        <ScrollToTopOnMount />
-        <FloatingWhatsApp />
-        <FloatingCTA />
+        <CartProvider>
+          <Header />
+          <main className="flex-1 mt-16 sm:mt-20">
+            <ScrollToTopOnMount />
+            {children}
+          </main>
+          <Footer />
+          <ScrollToTop />
+          <FloatingWhatsApp />
+          <FloatingCTA />
+        </CartProvider>
         {/* Zoho Payments Script */}
         <script src="https://js.zohostatic.com/zohopayments/v1/zpayments.js"></script>
       </body>
