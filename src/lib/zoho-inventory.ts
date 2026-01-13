@@ -216,14 +216,10 @@ export async function getZohoProducts(): Promise<Product[]> {
         console.log(`Zoho fetched ${mappedProducts.length} items.`);
 
         // MERGE STRATEGY: 
-        // Return Zoho products. If Zoho has < 4 products (maybe just testing?), 
-        // append static products so the shop doesn't look empty.
-        // This is safer for production until you have full inventory loaded.
-
+        // If we found real items, return ONLY real items. 
+        // Do not mix static demo data with real inventory to prevent Checkout ID errors.
         if (mappedProducts.length > 0) {
-            // Filter out static products that might have same ID as Zoho ones to avoid dupes?
-            // (Unlikely since Zoho IDs are numbers, our static IDs are strings 'cam-001')
-            return [...mappedProducts, ...staticProducts];
+            return mappedProducts;
         }
 
         return staticProducts;

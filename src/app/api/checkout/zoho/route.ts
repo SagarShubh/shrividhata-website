@@ -48,6 +48,23 @@ export async function POST(request: Request) {
         // 3. Create Sales Order
         console.log("Creating Sales Order for Customer:", customerId);
 
+        // Filter/Validate Items
+        const invalidItems = items.filter((item: any) =>
+            typeof item.id === 'string' && (
+                item.id.startsWith('cam-') ||
+                item.id.startsWith('rec-') ||
+                item.id.startsWith('sto-') ||
+                item.id.startsWith('acc-')
+            )
+        );
+
+        if (invalidItems.length > 0) {
+            return NextResponse.json(
+                { error: 'Cart contains demo items that cannot be purchased. Please remove them and try again.' },
+                { status: 400 }
+            );
+        }
+
         const salesOrderItems = items.map((item: any) => ({
             item_id: item.id,
             quantity: item.quantity,
