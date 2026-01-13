@@ -21,6 +21,7 @@ interface ZohoItem {
     stock_on_hand: number;
     cf_category?: string; // Custom Field for Category
     cf_subcategory?: string; // Custom Field for SubCategory
+    cf_product_image?: string; // Custom Field for Image
     // Add other fields as necessary
 }
 
@@ -164,7 +165,18 @@ export async function getZohoProducts(): Promise<Product[]> {
             if (category === 'Networking') image = '/products/cat6-cable.jpg';
 
             // Override with Real Image if available
-            if (item.image_name) {
+            // Override with Real Image if available
+            // Priority 1: Custom Field (cf_product_image)
+            if (item.cf_product_image) {
+                if (item.cf_product_image.startsWith('http')) {
+                    image = item.cf_product_image;
+                } else {
+                    // If it's not a URL, assume it acts like a flag or filename for the default image
+                    image = `/api/images/zoho?itemId=${item.item_id}`;
+                }
+            }
+            // Priority 2: Standard Image Name
+            else if (item.image_name) {
                 image = `/api/images/zoho?itemId=${item.item_id}`;
             } else {
                 // Secondary check: Refine default images based on subCategory for better generic look
@@ -255,7 +267,19 @@ export async function getZohoProduct(id: string): Promise<Product | undefined> {
 
                 // Use a valid default image from our public/products folder
                 let image = '/products/dome-cam.jpg';
-                if (item.image_name) {
+
+                // Override with Real Image if available
+                // Priority 1: Custom Field (cf_product_image)
+                if (item.cf_product_image) {
+                    if (item.cf_product_image.startsWith('http')) {
+                        image = item.cf_product_image;
+                    } else {
+                        // If it's not a URL, assume it acts like a flag or filename for the default image
+                        image = `/api/images/zoho?itemId=${item.item_id}`;
+                    }
+                }
+                // Priority 2: Standard Image Name
+                else if (item.image_name) {
                     image = `/api/images/zoho?itemId=${item.item_id}`;
                 }
 
