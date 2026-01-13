@@ -32,6 +32,7 @@ export async function GET() {
         // 2. Try to fetch Items to verify scopes and data
         let itemsStatus = "Not Attempted";
         let fetchedItems = [];
+        let itemsData: any = {}; // Define outer scope
 
         if (tokenResponse && tokenResponse.access_token && orgId) {
             try {
@@ -43,7 +44,7 @@ export async function GET() {
                     cache: 'no-store'
                 });
 
-                const itemsData = await itemsRes.json();
+                itemsData = await itemsRes.json();
                 if (itemsData.code === 0) {
                     itemsStatus = "Success";
                     fetchedItems = itemsData.items.slice(0, 5).map((i: any) => ({
@@ -74,6 +75,8 @@ export async function GET() {
             tokenStatus: tokenResponse && tokenResponse.error ? "Failed" : "Success",
             itemsStatus,
             sampleItems: fetchedItems,
+            // Dump the FIRST raw item completely so we can see the ACTUAL custom field names
+            rawItemInspector: itemsData.items ? itemsData.items[0] : null,
             zohoAuthResponse: tokenResponse
         });
 
