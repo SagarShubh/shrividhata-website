@@ -12,10 +12,13 @@ export async function GET(request: NextRequest) {
     const { blob, type } = await getZohoItemImage(itemId);
 
     if (!blob) {
+        console.error(`Image Proxy Failed for itemId: ${itemId}. Redirecting to fallback.`);
         // Fallback to a valid existing image if fetch failed
         // We do not have 'placeholder.jpg', so using a generic one
         return NextResponse.redirect(new URL('/products/connectors.jpg', request.url));
     }
+
+    console.log(`Image Proxy Success: ${itemId}, Type: ${type}, Size: ${blob.size}`);
 
     return new NextResponse(blob, {
         headers: {
