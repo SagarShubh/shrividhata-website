@@ -18,6 +18,7 @@ export async function POST(request: Request) {
         }
 
         // Send the email
+        console.log("Sending email via Resend...");
         const { data: emailData, error } = await resend.emails.send({
             from: "ShriVidhata <contacts@shrividhata.com>", // Verified Domain
             to: ["contacts@shrividhata.com"], // Business Email
@@ -46,6 +47,8 @@ export async function POST(request: Request) {
                 { status: 500 }
             );
         }
+
+        console.log("Resend Success:", emailData);
 
         return NextResponse.json({ success: true, message: "Message sent successfully!" });
     } catch (error) {
