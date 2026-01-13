@@ -7,6 +7,7 @@ import { Send, Loader2, Phone, Mail, MapPin } from "lucide-react";
 export function Contact() {
     const [loading, setLoading] = useState(false);
     const [success, setSuccess] = useState(false);
+    const [successId, setSuccessId] = useState<string | null>(null);
 
     async function handleSubmit(e: React.FormEvent<HTMLFormElement>) {
         e.preventDefault();
@@ -23,6 +24,8 @@ export function Contact() {
             });
 
             if (response.ok) {
+                const result = await response.json();
+                setSuccessId(result.id);
                 setSuccess(true);
             } else {
                 const errorData = await response.json();
@@ -96,6 +99,7 @@ export function Contact() {
                                     <Send className="w-10 h-10" />
                                 </div>
                                 <h3 className="text-2xl font-bold text-slate-900 mb-2">Message Sent!</h3>
+                                {successId && <p className="text-xs text-slate-400 font-mono mb-2">Ref: {successId}</p>}
                                 <p className="text-slate-600">Thank you for reaching out. We will get back to you shortly.</p>
                                 <button
                                     onClick={() => setSuccess(false)}

@@ -57,7 +57,11 @@ export async function POST(request: Request) {
 
         console.log("Resend Success:", emailData);
 
-        return NextResponse.json({ success: true, message: "Message sent successfully!" });
+        return NextResponse.json({
+            success: true,
+            message: "Message sent successfully!",
+            id: emailData?.id
+        });
     } catch (error) {
         console.error("Error processing contact form:", error);
         return NextResponse.json(
