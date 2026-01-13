@@ -64,6 +64,30 @@ export async function POST(request: Request) {
             );
         }
 
+        // 4. Send Email Alert (Async - don't block response)
+        try {
+            const { Resend } = require('resend');
+            const resend = new Resend(process.env.RESEND_API_KEY);
+
+            await resend.emails.send({
+                from: "ShriVidhata Shop <onboarding@resend.dev>",
+                to: ["contacts@shrividhata.com"], // Corrected domain spelling
+                subject: `💰 New Order: ${product.name}`,
+                html: `
+                    <h1>New Order Recieved!</h1>
+                    <p><strong>Order ID:</strong> ${orderResult.order_id}</p>
+                    <p><strong>Customer:</strong> ${shippingDetails.name} (${shippingDetails.phone})</p>
+                    <p><strong>Product:</strong> ${product.name}</p>
+                    <p><strong>Price:</strong> ₹${product.price}</p>
+                    <br/>
+                    <a href="https://inventory.zoho.in/app/items" style="padding: 10px 20px; background: #0070f3; color: white; text-decoration: none; border-radius: 5px;">View in Zoho Inventory</a>
+                `
+            });
+        } catch (mailError) {
+            console.error("Email Alert Failed:", mailError);
+            // Don't fail the order just because email failed
+        }
+
         return NextResponse.json({
             success: true,
             orderId: orderResult.order_id,
