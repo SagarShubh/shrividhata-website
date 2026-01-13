@@ -31,6 +31,7 @@ export default function ProductCard({ product }: ProductCardProps) {
                     fill
                     className="object-cover transition-transform duration-500 group-hover:scale-110"
                     sizes="(max-width: 768px) 100vw, (max-width: 1200px) 50vw, 33vw"
+                    unoptimized // Bypass Next.js optimization to load API proxy images directly
                 />
 
                 {/* We will implement real images properly later, for now just a colored overlay or placeholder text */}

@@ -95,6 +95,7 @@ export default function ProductDetailsClient({ product }: ProductDetailsClientPr
                             className="object-cover"
                             sizes="(max-width: 768px) 100vw, 50vw"
                             priority
+                            unoptimized // Bypass Next.js optimization for direct API fetch
                         />
                     </motion.div>
 
