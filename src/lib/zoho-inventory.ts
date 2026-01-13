@@ -488,30 +488,30 @@ export async function uploadZohoImage(itemId: string, file: File): Promise<boole
 /**
  * Fetch Item Image Blob
  */
-export async function getZohoItemImage(itemId: string): Promise<{ blob: Blob | null, type: string }> {
+export async function getZohoItemImage(itemId: string): Promise<{ blob: Blob | null, type: string, error?: string }> {
     const token = await getAccessToken();
-    if (!token || !ZOHO_ORG_ID) return { blob: null, type: '' };
+    if (!token || !ZOHO_ORG_ID) return { blob: null, type: '', error: 'Auth Failed: No Token/OrgID' };
 
     try {
         const res = await fetch(`https://www.zohoapis.in/books/v3/items/${itemId}/image?organization_id=${ZOHO_ORG_ID}`, {
             headers: {
                 'Authorization': `Zoho-oauthtoken ${token}`
             },
-            next: { revalidate: 3600 } // Cache image for 1 hour
+            next: { revalidate: 0 } // NO CACHE for images to prevent stale 403s
         });
 
         if (!res.ok) {
             const errorText = await res.text();
             console.error(`Zoho Image Fetch Failed: ${res.status} ${res.statusText}`, errorText);
-            return { blob: null, type: '' };
+            return { blob: null, type: '', error: `Fetch Failed: ${res.status} - ${errorText}` };
         }
 
         const blob = await res.blob();
         const type = res.headers.get('Content-Type') || 'image/jpeg';
         return { blob, type };
-    } catch (e) {
+    } catch (e: any) {
         console.error("Zoho Image Fetch Error", e);
-        return { blob: null, type: '' };
+        return { blob: null, type: '', error: `Exception: ${e.message}` };
     }
 }
 
