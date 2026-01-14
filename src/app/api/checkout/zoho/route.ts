@@ -87,12 +87,16 @@ export async function POST(request: Request) {
         // 4. Send Email Alert (Async - don't block response)
         try {
             // A. Trigger Zoho Official Email (includes Payment Link)
+            // DISABLED: User requested Manual Confirmation workflow (Order -> Confirm -> Pay)
+            // The admin will manually confirm the draft order and send the payment link.
+            /*
             const { emailSalesOrder } = require('@/lib/zoho-inventory');
             console.log("Triggering Zoho Payment Email...");
             emailSalesOrder(orderResult.order_id, shippingDetails.email).then((success: boolean) => {
                 if (success) console.log(`Zoho Email sent to ${shippingDetails.email}`);
                 else console.error("Failed to send Zoho Email");
             });
+            */
 
             // B. Send Admin Alert via Resend
             const { Resend } = require('resend');
@@ -108,7 +112,7 @@ export async function POST(request: Request) {
                 subject: `💰 New Order Recieved! (ID: ${orderResult.order_id})`,
                 html: `
                     <h1>New Order Recieved!</h1>
-                    <p><strong>Order ID:</strong> ${orderResult.order_id}</p>
+                    <p><strong>Order ID:</strong> ${orderResult.order_id} (DRAFT)</p>
                     <p><strong>Customer:</strong> ${shippingDetails.name} (${shippingDetails.phone})</p>
                     
                     <h3>Items:</h3>
@@ -116,7 +120,7 @@ export async function POST(request: Request) {
                         ${itemsListHtml}
                     </ul>
                     
-                    <a href="https://inventory.zoho.in/app/items" style="padding: 10px 20px; background: #0070f3; color: white; text-decoration: none; border-radius: 5px;">View in Zoho Inventory</a>
+                    <a href="https://inventory.zoho.in/app/salesorders/${orderResult.order_id}" style="padding: 10px 20px; background: #0070f3; color: white; text-decoration: none; border-radius: 5px;">Review & Confirm in Zoho</a>
                 `
             });
         } catch (mailError) {
@@ -127,7 +131,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             orderId: orderResult.order_id,
-            message: 'Order created successfully. Please check your email for payment link.'
+            message: 'Order placed! We will confirm availability and send you a payment link shortly.'
         });
 
     } catch (error: any) {

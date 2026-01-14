@@ -670,7 +670,6 @@ export async function createSalesOrder(orderData: CreateSalesOrderData): Promise
             rate: item.rate // If undefined, Zoho uses item default rate
         })),
         date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
-        status: 'open', // Attempt to create as Confirmed/Open directly
         notes: orderData.notes,
         is_inclusive_tax: false // Adjust based on your tax settings
     };
