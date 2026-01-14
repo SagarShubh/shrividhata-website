@@ -696,3 +696,36 @@ export async function createSalesOrder(orderData: CreateSalesOrderData): Promise
     }
 }
 
+
+/**
+ * Trigger the official Zoho Sales Order email (contains Payment Link)
+ */
+export async function emailSalesOrder(orderId: string, toEmail?: string): Promise<boolean> {
+    const token = await getAccessToken();
+    if (!token || !ZOHO_ORG_ID) return false;
+
+    // Optional: Query parameters to specify recipients if needed, 
+    // but usually calling this endpoint sends to the generated contacts.
+    // To be safe and precise, we can pass expected recipients.
+    const queryParams = toEmail ? `?to_mail_ids=${encodeURIComponent(toEmail)}` : '';
+
+    try {
+        const res = await fetch(`https://www.zohoapis.in/books/v3/salesorders/${orderId}/email${queryParams}&organization_id=${ZOHO_ORG_ID}`, {
+            method: 'POST',
+            headers: {
+                'Authorization': `Zoho-oauthtoken ${token}`
+            }
+        });
+
+        if (!res.ok) {
+            const err = await res.text();
+            console.error('Zoho Email Trigger Failed:', err);
+            return false;
+        }
+
+        return true;
+    } catch (e) {
+        console.error("Zoho Email Network Error:", e);
+        return false;
+    }
+}

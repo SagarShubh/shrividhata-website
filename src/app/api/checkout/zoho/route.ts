@@ -86,6 +86,15 @@ export async function POST(request: Request) {
 
         // 4. Send Email Alert (Async - don't block response)
         try {
+            // A. Trigger Zoho Official Email (includes Payment Link)
+            const { emailSalesOrder } = require('@/lib/zoho-inventory');
+            console.log("Triggering Zoho Payment Email...");
+            emailSalesOrder(orderResult.order_id, shippingDetails.email).then((success: boolean) => {
+                if (success) console.log(`Zoho Email sent to ${shippingDetails.email}`);
+                else console.error("Failed to send Zoho Email");
+            });
+
+            // B. Send Admin Alert via Resend
             const { Resend } = require('resend');
             const resend = new Resend(process.env.RESEND_API_KEY);
 
@@ -118,7 +127,7 @@ export async function POST(request: Request) {
         return NextResponse.json({
             success: true,
             orderId: orderResult.order_id,
-            message: 'Order created successfully'
+            message: 'Order created successfully. Please check your email for payment link.'
         });
 
     } catch (error: any) {
