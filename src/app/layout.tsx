@@ -13,8 +13,36 @@ const geistMono = Geist_Mono({
 });
 
 export const metadata: Metadata = {
-  title: "ShriVidhata | Best CCTV Camera Sales & Installation Services",
-  description: "ShriVidhata offers premium CCTV camera sales, installation, and maintenance services. Authorized dealers for Hikvision, CP Plus, Dahua, and more.",
+  metadataBase: new URL('https://shrividhata.com'),
+  title: {
+    default: "ShriVidhata | Best CCTV Camera Sales & Installation Services",
+    template: "%s | ShriVidhata"
+  },
+  description: "ShriVidhata offers premium CCTV camera sales, installation, and maintenance services in Narsinghgarh & Madhya Pradesh. Authorized dealers for Hikvision, CP Plus, Dahua.",
+  keywords: ["CCTV Camera", "Security Systems", "CCTV Installation", "Narsinghgarh", "Hikvision Dealer", "CP Plus Dealer", "Home Security", "Surveillance"],
+  openGraph: {
+    type: 'website',
+    locale: 'en_IN',
+    url: 'https://shrividhata.com',
+    siteName: 'ShriVidhata Security Solutions',
+    images: [
+      {
+        url: '/og-image.jpg', // We should ensure this exists or use a default
+        width: 1200,
+        height: 630,
+        alt: 'ShriVidhata Security Solutions',
+      },
+    ],
+  },
+  twitter: {
+    card: 'summary_large_image',
+    title: "ShriVidhata | Security Solutions",
+    description: "Premium CCTV & Security Installation Services.",
+  },
+  icons: {
+    icon: '/favicon.ico',
+    apple: '/apple-touch-icon.png',
+  }
 };
 
 import { Header } from "@/components/layout/Header";

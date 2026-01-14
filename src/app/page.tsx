@@ -7,6 +7,7 @@ import { Portfolio } from "@/components/home/Portfolio";
 import { Testimonials } from "@/components/home/Testimonials";
 import { FAQ } from "@/components/home/FAQ";
 import { Contact } from "@/components/home/Contact";
+import { LocalBusinessJsonLd } from "@/components/seo/LocalBusinessJsonLd";
 
 import { Packages } from "@/components/home/Packages";
 import { getZohoProducts } from "@/lib/zoho-inventory";
@@ -16,6 +17,7 @@ export default async function Home() {
 
   return (
     <div className="flex flex-col">
+      <LocalBusinessJsonLd />
       <Hero />
       <About />
       <Workflow />

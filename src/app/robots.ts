@@ -5,7 +5,7 @@ export default function robots(): MetadataRoute.Robots {
         rules: {
             userAgent: '*',
             allow: '/',
-            disallow: '/private/',
+            disallow: ['/api/', '/admin/', '/context/', '/lib/'],
         },
         sitemap: 'https://shrividhata.com/sitemap.xml',
     };

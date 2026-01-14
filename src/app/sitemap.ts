@@ -1,45 +1,36 @@
 import { MetadataRoute } from 'next';
+import { getZohoProducts } from '@/lib/zoho-inventory';
 
-export default function sitemap(): MetadataRoute.Sitemap {
-    // Base URL from environment or hardcoded for now
+export default async function sitemap(): Promise<MetadataRoute.Sitemap> {
     const baseUrl = 'https://shrividhata.com';
 
-    return [
-        {
-            url: baseUrl,
-            lastModified: new Date(),
-            changeFrequency: 'yearly',
-            priority: 1,
-        },
-        {
-            url: `${baseUrl}/#about`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/#services`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/#brands`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/#portfolio`,
-            lastModified: new Date(),
-            changeFrequency: 'monthly',
-            priority: 0.8,
-        },
-        {
-            url: `${baseUrl}/#contact`,
-            lastModified: new Date(),
-            changeFrequency: 'yearly',
-            priority: 0.5,
-        },
-    ];
+    // 1. Static Routes
+    const staticRoutes = [
+        '',
+        '/about',
+        '/services',
+        '/shop',
+        '/contact',
+        '/process',
+        '/amc',
+        '/refund-policy',
+        '/shipping-policy',
+        '/terms-of-service',
+    ].map((route) => ({
+        url: `${baseUrl}${route}`,
+        lastModified: new Date(),
+        changeFrequency: 'monthly' as const,
+        priority: route === '' ? 1 : 0.8,
+    }));
+
+    // 2. Dynamic Product Routes
+    const products = await getZohoProducts();
+    const productRoutes = products.map((product) => ({
+        url: `${baseUrl}/shop/${product.id}`,
+        lastModified: new Date(),
+        changeFrequency: 'daily' as const,
+        priority: 0.9,
+    }));
+
+    return [...staticRoutes, ...productRoutes];
 }
