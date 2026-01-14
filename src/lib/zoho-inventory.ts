@@ -615,7 +615,8 @@ export async function getSalesOrder(orderId: string) {
     const accessToken = await getAccessToken();
 
     try {
-        const response = await fetch(`https://inventory.zoho.in/api/v1/salesorders/${orderId}?organization_id=${process.env.ZOHO_INVENTORY_ORG_ID}`, {
+        // USE ZOHO BOOKS API (Consistent with createSalesOrder)
+        const response = await fetch(`https://www.zohoapis.in/books/v3/salesorders/${orderId}?organization_id=${process.env.ZOHO_INVENTORY_ORG_ID}`, {
             headers: {
                 'Authorization': `Zoho-oauthtoken ${accessToken}`
             },
@@ -669,6 +670,7 @@ export async function createSalesOrder(orderData: CreateSalesOrderData): Promise
             rate: item.rate // If undefined, Zoho uses item default rate
         })),
         date: new Date().toISOString().split('T')[0], // YYYY-MM-DD
+        status: 'open', // Attempt to create as Confirmed/Open directly
         notes: orderData.notes,
         is_inclusive_tax: false // Adjust based on your tax settings
     };
