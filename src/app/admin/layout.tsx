@@ -27,6 +27,7 @@ export default function AdminLayout({
     const navItems = [
         // { label: 'Dashboard', href: '/admin', icon: LayoutDashboard }, // Maybe for later
         { label: 'Products', href: '/admin/products', icon: Package },
+        { label: 'Hero Slides', href: '/admin/hero', icon: LayoutDashboard },
     ];
 
     const SidebarContent = () => (

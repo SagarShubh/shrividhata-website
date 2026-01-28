@@ -1,0 +1,47 @@
+[
+    {
+        "id": "slide-001",
+        "productId": "cam-001",
+        "theme": "blue-gradient",
+        "customTitle": "All-in-one Android Indoor Station",
+        "customDescription": "10.1-inch colorful touch screen with 1024 × 600 resolution, Built-in Android System.",
+        "brandLogo": "/brands/hikvision.png",
+        "image": "/products/dome-cam.jpg"
+    },
+    {
+        "id": "slide-002",
+        "productId": "rec-002",
+        "theme": "dark-tech",
+        "customTitle": "4K Interactive Display",
+        "customDescription": "Android 14.0/8GB/128GB/4K-Camera. EDLA Certified, UHD 4K display.",
+        "brandLogo": "/brands/hikvision.png",
+        "image": "/products/nvr-16ch.jpg"
+    },
+    {
+        "id": "slide-003",
+        "productId": "cam-004",
+        "theme": "minimal-clean",
+        "customTitle": "Smart Fingerprint Door Lock",
+        "customDescription": "Now you don't have to be anxious about losing your keys. Simply grab the handle to enter.",
+        "brandLogo": "/brands/ezviz.png",
+        "image": "/products/wifi-cam.jpg"
+    },
+    {
+        "id": "slide-004",
+        "productId": "acc-001",
+        "theme": "ocean-blue",
+        "customTitle": "Expand Your Business Network",
+        "customDescription": "A flexible solution with advanced Layer 2 management and static routing.",
+        "brandLogo": "/brands/dahua.png",
+        "image": "/products/cat6-cable.jpg"
+    },
+    {
+        "id": "slide-005",
+        "productId": "cam-003",
+        "theme": "purple-haze",
+        "customTitle": "Smarter Audio Made Easy",
+        "customDescription": "Discover diverse range of audios, tailored to meet various application requirements.",
+        "brandLogo": "/brands/hikvision.png",
+        "image": "/products/ptz-cam.jpg"
+    }
+]
