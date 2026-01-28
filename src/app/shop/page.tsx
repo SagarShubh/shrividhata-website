@@ -1,9 +1,8 @@
 import { getZohoProducts } from '@/lib/zoho-inventory';
-import { Category } from '@/data/products';
-import ShopClient from '@/components/shop/ShopClient';
+import ShopClientV2 from '@/components/shop/ShopClientV2';
 
 export default async function ShopPage() {
     const products = await getZohoProducts();
 
-    return <ShopClient initialProducts={products} />;
+    return <ShopClientV2 initialProducts={products} />;
 }
