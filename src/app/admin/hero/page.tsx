@@ -139,15 +139,38 @@ export default function HeroEditorPage() {
 
                                     <div>
                                         <label className="block text-xs font-medium text-white/40 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                            <LinkIcon className="w-3 h-3" /> Product ID
+                                            <LinkIcon className="w-3 h-3" /> Shop Link or Product ID
                                         </label>
-                                        <input
-                                            type="text"
-                                            value={slide.productId}
-                                            onChange={(e) => updateSlide(index, 'productId', e.target.value)}
-                                            className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono"
-                                            placeholder="e.g. cam-001"
-                                        />
+                                        <div className="relative">
+                                            <input
+                                                type="text"
+                                                value={slide.productId} // Note: We might want to persist the ID but show the link if possible? Actually keeping ID is safer.
+                                                // Actually, let's treat this input as a "smart input". 
+                                                // If user pastes URL, we extract ID. If they type ID, we keep it.
+                                                onChange={(e) => {
+                                                    const val = e.target.value;
+                                                    // Check if it looks like a URL from our shop
+                                                    // e.g. https://shrividhata.com/shop/cam-001 or localhost:3000/shop/cam-001
+                                                    // Regex to find content after /shop/
+                                                    const match = val.match(/\/shop\/([^\/?]+)/);
+                                                    if (match && match[1]) {
+                                                        // It's a URL, use the extracted ID
+                                                        updateSlide(index, 'productId', match[1]);
+                                                    } else {
+                                                        // It's just text/ID
+                                                        updateSlide(index, 'productId', val);
+                                                    }
+                                                }}
+                                                className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono"
+                                                placeholder="Paste Shop Link (e.g. /shop/cam-001)"
+                                            />
+                                            {/* Helper text showing the detected product */}
+                                            {products.find(p => p.id === slide.productId) && (
+                                                <div className="absolute right-3 top-1/2 -translate-y-1/2 text-xs text-green-400 flex items-center gap-1 pointer-events-none">
+                                                    <CheckCircle2 className="w-3 h-3" /> Found provided product
+                                                </div>
+                                            )}
+                                        </div>
                                     </div>
                                 </div>
 
