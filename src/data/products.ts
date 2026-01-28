@@ -25,6 +25,7 @@ export interface Product {
     features: string[];
     stock: boolean;
     brand?: string;
+    brandLogo?: string; // Path to brand logo in public/brands
     stripePriceId?: string; // For future integration
 }
 
@@ -40,6 +41,8 @@ export const products: Product[] = [
         image: '/products/dome-cam.jpg',
         features: ['4MP Resolution', 'Night Vision (20m)', 'Motion Detection', 'Wide Dynamic Range'],
         stock: true,
+        brand: 'Hikvision',
+        brandLogo: '/brands/hikvision.png'
     },
     {
         id: 'cam-002',
@@ -51,6 +54,8 @@ export const products: Product[] = [
         image: '/products/bullet-cam.jpg',
         features: ['5MP Resolution', 'IP67 Waterproof', 'Night Vision (30m)', 'Smart IR'],
         stock: true,
+        brand: 'CP Plus',
+        brandLogo: '/brands/cpplus.png'
     },
     {
         id: 'cam-003',
@@ -62,6 +67,8 @@ export const products: Product[] = [
         image: '/products/ptz-cam.jpg',
         features: ['25x Optical Zoom', '360° Rotation', 'Auto Tracking', 'Two-way Audio'],
         stock: true,
+        brand: 'Hikvision',
+        brandLogo: '/brands/hikvision.png'
     },
     {
         id: 'cam-004',
@@ -73,6 +80,8 @@ export const products: Product[] = [
         image: '/products/wifi-cam.jpg',
         features: ['1080p HD', 'WiFi Connection', 'Two-way Audio', 'Cloud Storage Support'],
         stock: true,
+        brand: 'Ezviz',
+        brandLogo: '/brands/ezviz.png'
     },
 
     // RECORDERS
@@ -86,6 +95,8 @@ export const products: Product[] = [
         image: '/products/dvr-8ch.jpg',
         features: ['8 Channels', 'H.265+ Compression', 'HDMI/VGA Output', 'Mobile App View'],
         stock: true,
+        brand: 'CP Plus',
+        brandLogo: '/brands/cpplus.png'
     },
     {
         id: 'rec-002',
@@ -97,6 +108,8 @@ export const products: Product[] = [
         image: '/products/nvr-16ch.jpg',
         features: ['16 Channels', '4K Support', 'PoE Ports', 'Smart Analytics'],
         stock: true,
+        brand: 'Hikvision',
+        brandLogo: '/brands/hikvision.png'
     },
 
     // STORAGE
@@ -110,6 +123,8 @@ export const products: Product[] = [
         image: '/products/hdd-1tb.jpg',
         features: ['1TB Capacity', '24/7 Reliability', '5400 RPM', 'SATA 6Gb/s'],
         stock: true,
+        brand: 'Seagate',
+        brandLogo: '/brands/seagate.png'
     },
     {
         id: 'sto-002',
@@ -121,6 +136,8 @@ export const products: Product[] = [
         image: '/products/hdd-4tb.jpg',
         features: ['4TB Capacity', 'AllFrame Technology', 'Workload Rating 180TB/yr', '3-Year Warranty'],
         stock: true,
+        brand: 'WD Purple',
+        brandLogo: '/brands/prama.jpg' // Using Prama/WD placeholder
     },
 
     // ACCESSORIES
@@ -134,6 +151,8 @@ export const products: Product[] = [
         image: '/products/cat6-cable.jpg',
         features: ['305m Bundle', 'Pure Copper', 'High Speed Data', 'Durable Jacket'],
         stock: true,
+        brand: 'D-Link',
+        brandLogo: '/brands/dahua.png' // Using Dahua/Misc for now or generic
     },
     {
         id: 'acc-002',

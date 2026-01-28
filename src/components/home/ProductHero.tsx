@@ -32,18 +32,23 @@ export function ProductHero() {
     const product = FEATURED_PRODUCTS[current];
 
     return (
-        <section className="relative w-full h-[600px] lg:h-[700px] flex items-center bg-slate-50 overflow-hidden">
-            {/* Background Elements */}
-            <div className="absolute inset-0 z-0">
-                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] rounded-full bg-blue-100/50 blur-3xl opacity-60" />
-                <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-100/50 blur-3xl opacity-60" />
+        <section className="relative w-full h-auto min-h-[600px] lg:h-[700px] flex items-center bg-gradient-to-br from-blue-50 via-white to-blue-50 overflow-hidden">
+
+            {/* Background Decorative Elements (Abstract Tech/Curves) */}
+            <div className="absolute inset-0 z-0 pointer-events-none">
+                {/* Large Blue Blob Top Right */}
+                <div className="absolute top-[-20%] right-[-10%] w-[800px] h-[800px] rounded-full bg-blue-100/40 blur-3xl opacity-60 mix-blend-multiply" />
+                {/* Large Purple Blob Bottom Left */}
+                <div className="absolute bottom-[-20%] left-[-10%] w-[600px] h-[600px] rounded-full bg-indigo-100/40 blur-3xl opacity-60 mix-blend-multiply" />
+                {/* Subtle Grid Pattern */}
+                <div className="absolute inset-0 bg-[url('/grid-pattern.svg')] opacity-[0.02]" />
             </div>
 
-            <div className="container relative z-10 px-4 sm:px-6 lg:px-8 h-full">
-                <div className="flex flex-col lg:flex-row items-center justify-between h-full gap-8 lg:gap-16">
+            <div className="container relative z-10 px-4 sm:px-6 lg:px-8 py-12 lg:py-0 h-full">
+                <div className="flex flex-col-reverse lg:flex-row items-center justify-between h-full gap-8 lg:gap-16">
 
-                    {/* Left: Content */}
-                    <div className="flex-1 text-center lg:text-left pt-12 lg:pt-0 max-w-2xl">
+                    {/* Content (Left on Desktop, Bottom on Mobile) */}
+                    <div className="flex-1 text-center lg:text-left w-full max-w-2xl">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={product.id}
@@ -51,31 +56,41 @@ export function ProductHero() {
                                 animate={{ opacity: 1, x: 0 }}
                                 exit={{ opacity: 0, x: 20 }}
                                 transition={{ duration: 0.5 }}
+                                className="flex flex-col items-center lg:items-start"
                             >
-                                {/* Brand Label */}
-                                <div className="mb-4 inline-block">
-                                    <span className="text-sm font-bold tracking-wider text-blue-600 uppercase bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
-                                        {product.category}
-                                    </span>
+                                {/* Brand Logo / Label */}
+                                <div className="mb-6 h-8 sm:h-10 relative w-32 sm:w-40 flex items-center justify-center lg:justify-start">
+                                    {product.brandLogo ? (
+                                        <Image
+                                            src={product.brandLogo}
+                                            alt={product.brand || 'Brand Logo'}
+                                            width={160}
+                                            height={40}
+                                            className="object-contain object-left"
+                                        />
+                                    ) : (
+                                        <span className="text-sm font-bold tracking-wider text-blue-600 uppercase bg-blue-50 px-3 py-1 rounded-full border border-blue-100">
+                                            {product.category}
+                                        </span>
+                                    )}
                                 </div>
 
-                                <h1 className="text-4xl sm:text-5xl lg:text-6xl font-bold text-slate-900 mb-6 leading-tight">
+                                <h1 className="text-3xl sm:text-5xl lg:text-6xl font-extrabold text-slate-900 mb-4 sm:mb-6 leading-tight tracking-tight">
                                     {product.name}
                                 </h1>
 
-                                <p className="text-lg text-slate-600 mb-8 leading-relaxed max-w-prose mx-auto lg:mx-0">
+                                <p className="text-base sm:text-lg text-slate-600 mb-8 leading-relaxed max-w-prose mx-auto lg:mx-0">
                                     {product.description}
                                 </p>
 
-                                <div className="flex items-center justify-center lg:justify-start gap-4">
+                                <div className="flex flex-col sm:flex-row items-center gap-4 sm:gap-6 w-full sm:w-auto">
                                     <Link
                                         href={`/shop/${product.id}`}
-                                        className="inline-flex items-center gap-2 px-8 py-4 bg-secondary text-white rounded-lg hover:bg-red-700 transition-all font-semibold shadow-lg shadow-red-900/20 hover:shadow-red-900/40 transform hover:-translate-y-1"
+                                        className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-8 py-3.5 bg-[#0A74DA] text-white rounded-full hover:bg-[#005fb8] transition-all font-semibold shadow-lg shadow-blue-500/20 hover:shadow-blue-500/30 transform hover:-translate-y-0.5 text-lg"
                                     >
-                                        <ShoppingCart className="w-5 h-5" />
                                         Shop Now
                                     </Link>
-                                    <span className="text-2xl font-bold text-slate-900">
+                                    <span className="text-2xl sm:text-3xl font-bold text-slate-900">
                                         ₹{product.price.toLocaleString('en-IN')}
                                     </span>
                                 </div>
@@ -83,20 +98,19 @@ export function ProductHero() {
                         </AnimatePresence>
                     </div>
 
-                    {/* Right: Product Image */}
-                    <div className="flex-1 relative w-full h-[400px] lg:h-full flex items-center justify-center">
+                    {/* Product Image (Right on Desktop, Top on Mobile) */}
+                    <div className="flex-1 relative w-full h-[280px] sm:h-[400px] lg:h-full flex items-center justify-center">
                         <AnimatePresence mode="wait">
                             <motion.div
                                 key={product.id}
-                                initial={{ opacity: 0, scale: 0.9 }}
-                                animate={{ opacity: 1, scale: 1 }}
-                                exit={{ opacity: 0, scale: 0.9 }}
+                                initial={{ opacity: 0, scale: 0.9, y: 20 }}
+                                animate={{ opacity: 1, scale: 1, y: 0 }}
+                                exit={{ opacity: 0, scale: 0.9, y: -20 }}
                                 transition={{ duration: 0.5 }}
-                                className="relative w-full max-w-[500px] aspect-square"
+                                className="relative w-full max-w-[320px] sm:max-w-[450px] lg:max-w-[550px] aspect-square"
                             >
                                 {/* Product Image */}
-                                {/* Note: Using fill for better responsiveness, object-fit contain */}
-                                <div className="relative w-full h-full drop-shadow-2xl">
+                                <div className="relative w-full h-full filter drop-shadow-xl hover:drop-shadow-2xl transition-all duration-300">
                                     <Image
                                         src={product.image}
                                         alt={product.name}
@@ -111,31 +125,33 @@ export function ProductHero() {
                 </div>
             </div>
 
-            {/* Navigation Buttons (Arrows) */}
-            <button
-                onClick={prevSlide}
-                className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-slate-200 text-slate-700 hover:bg-white hover:text-secondary shadow-lg transition-all z-20"
-                aria-label="Previous Slide"
-            >
-                <ArrowLeft className="w-6 h-6" />
-            </button>
-            <button
-                onClick={nextSlide}
-                className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white/80 backdrop-blur-sm border border-slate-200 text-slate-700 hover:bg-white hover:text-secondary shadow-lg transition-all z-20"
-                aria-label="Next Slide"
-            >
-                <ArrowRight className="w-6 h-6" />
-            </button>
+            {/* Navigation Buttons (Hidden on Mobile, Visible on Desktop) */}
+            <div className="hidden lg:block">
+                <button
+                    onClick={prevSlide}
+                    className="absolute left-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white/50 backdrop-blur-md border border-white/60 text-slate-700 hover:bg-white hover:text-[#0A74DA] hover:scale-110 shadow-lg transition-all z-20"
+                    aria-label="Previous Slide"
+                >
+                    <ArrowLeft className="w-6 h-6" />
+                </button>
+                <button
+                    onClick={nextSlide}
+                    className="absolute right-4 top-1/2 -translate-y-1/2 w-12 h-12 flex items-center justify-center rounded-full bg-white/50 backdrop-blur-md border border-white/60 text-slate-700 hover:bg-white hover:text-[#0A74DA] hover:scale-110 shadow-lg transition-all z-20"
+                    aria-label="Next Slide"
+                >
+                    <ArrowRight className="w-6 h-6" />
+                </button>
+            </div>
 
-            {/* Dots Pagination */}
-            <div className="absolute bottom-8 left-1/2 -translate-x-1/2 flex gap-3 z-20">
+            {/* Dots Pagination (Visible on all) */}
+            <div className="absolute bottom-6 left-1/2 -translate-x-1/2 flex gap-2 z-20">
                 {FEATURED_PRODUCTS.map((_, idx) => (
                     <button
                         key={idx}
                         onClick={() => setCurrent(idx)}
-                        className={`transition-all duration-300 rounded-full ${idx === current
-                                ? "w-8 h-2 bg-secondary"
-                                : "w-2 h-2 bg-slate-300 hover:bg-slate-400"
+                        className={`transition-all duration-300 rounded-full h-2 ${idx === current
+                                ? "w-8 bg-[#0A74DA]"
+                                : "w-2 bg-slate-300 hover:bg-slate-400"
                             }`}
                         aria-label={`Go to slide ${idx + 1}`}
                     />
