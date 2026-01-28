@@ -151,17 +151,63 @@ export default function HeroEditorPage() {
                                     </div>
                                 </div>
 
-                                {/* Image URL */}
+                                {/* Image URL & Upload */}
                                 <div>
                                     <label className="block text-xs font-medium text-white/40 uppercase tracking-wider mb-2 flex items-center gap-2">
-                                        <ImageIcon className="w-3 h-3" /> Image Path / URL
+                                        <ImageIcon className="w-3 h-3" /> Image Path / Upload
                                     </label>
-                                    <input
-                                        type="text"
-                                        value={slide.image}
-                                        onChange={(e) => updateSlide(index, 'image', e.target.value)}
-                                        className="w-full bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono"
-                                    />
+                                    <div className="flex gap-2">
+                                        <input
+                                            type="text"
+                                            value={slide.image}
+                                            onChange={(e) => updateSlide(index, 'image', e.target.value)}
+                                            className="flex-1 bg-black/20 border border-white/10 rounded-lg px-4 py-2 text-sm text-white focus:outline-none focus:border-blue-500 font-mono"
+                                            placeholder="/products/..."
+                                        />
+                                        <div className="relative">
+                                            <input
+                                                type="file"
+                                                id={`file-${index}`}
+                                                className="hidden"
+                                                accept="image/*"
+                                                onChange={async (e) => {
+                                                    const file = e.target.files?.[0];
+                                                    if (!file) return;
+
+                                                    // Optimistic UI could go here, but let's just upload
+                                                    setStatus({ type: null, message: 'Uploading image...' });
+
+                                                    const formData = new FormData();
+                                                    formData.append('file', file);
+
+                                                    // Dynamic import to avoid messing with top-level server action imports if needed, 
+                                                    // but standard should work. using the imported one.
+                                                    // We need to move the import to top of file if not there.
+                                                    // Assuming `uploadHeroImageAction` is imported.
+                                                    const { uploadHeroImageAction } = await import("./actions");
+                                                    const res = await uploadHeroImageAction(formData);
+
+                                                    if (res.success && res.url) {
+                                                        updateSlide(index, 'image', res.url);
+                                                        setStatus({ type: 'success', message: 'Image uploaded!' });
+                                                    } else {
+                                                        setStatus({ type: 'error', message: res.error || 'Upload failed' });
+                                                    }
+                                                }}
+                                            />
+                                            <label
+                                                htmlFor={`file-${index}`}
+                                                className="flex items-center justify-center w-10 h-10 bg-white/10 hover:bg-white/20 rounded-lg cursor-pointer transition-all border border-white/10 text-white/60 hover:text-white"
+                                                title="Upload Image"
+                                            >
+                                                <div className="sr-only">Upload</div>
+                                                <ImageIcon className="w-4 h-4" />
+                                            </label>
+                                        </div>
+                                    </div>
+                                    <p className="text-[10px] text-white/30 mt-1">
+                                        Uploads to <code>public/hero-images/</code> and pushes to GitHub.
+                                    </p>
                                 </div>
                             </div>
 

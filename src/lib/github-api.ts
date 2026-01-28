@@ -7,12 +7,13 @@ interface GitHubUpdateOptions {
     owner: string;
     repo: string;
     path: string;
-    content: string; // JSON string access
+    content: string; // JSON string access OR Base64 string
     message: string;
+    isBase64?: boolean; // Set true for images/binary
 }
 
 export async function updateGitHubFile(options: GitHubUpdateOptions) {
-    const { token, owner, repo, path, content, message } = options;
+    const { token, owner, repo, path, content, message, isBase64 } = options;
     const url = `${GITHUB_API_BASE}/repos/${owner}/${repo}/contents/${path}`;
 
     try {
@@ -37,8 +38,9 @@ export async function updateGitHubFile(options: GitHubUpdateOptions) {
         const sha = getData.sha;
 
         // 2. Update the file
-        // GitHub API requires content to be Base64 encoded
-        const encodedContent = Buffer.from(content).toString('base64');
+        // GitHub API requires content to be Base64 encoded.
+        // If content is already Base64 (isBase64=true), use it directly. Otherwise encode it.
+        const encodedContent = isBase64 ? content : Buffer.from(content).toString('base64');
 
         const putRes = await fetch(url, {
             method: "PUT",
