@@ -1,0 +1,74 @@
+[
+    {
+        "name": "Dahua 1MP HD Bullet Camera DH-HAC-B1A11P",
+        "price": 950,
+        "description": "Dahua 1MP HD Bullet Camera DH-HAC-B1A11P",
+        "sku": "DH-HAC-B1A11P",
+        "category": "Cameras",
+        "brand": "Dahua",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/DH-HAC-B1A11P.jpg/955138000035836120/400x400?storefront_domain=www.servius.in"
+    },
+    {
+        "name": "Dahua 5MP HD Bullet Camera DH-HAC-B1A51P",
+        "price": 1850,
+        "description": "Dahua 5MP HD Bullet Camera DH-HAC-B1A51P",
+        "sku": "DH-HAC-B1A51P",
+        "category": "Cameras",
+        "brand": "Dahua",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/DH-HAC-B1A51P.jpg/955138000090785482/400x400?storefront_domain=www.servius.in"
+    },
+    {
+        "name": "Dahua 2MP IP Bullet Camera DH-IPC-B1B20P",
+        "price": 2200,
+        "description": "Dahua 2MP IP Bullet Camera DH-IPC-B1B20P",
+        "sku": "DH-IPC-B1B20P",
+        "category": "Cameras",
+        "brand": "Dahua",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/DH-IPC-B1B20P.jpg/955138000035993951/400x400?storefront_domain=www.servius.in"
+    },
+    {
+        "name": "Dahua 5MP HD Dome Camera DH-HAC-T1A51P",
+        "price": 1900,
+        "description": "Dahua 5MP HD Dome Camera DH-HAC-T1A51P",
+        "sku": "DH-HAC-T1A51P",
+        "category": "Cameras",
+        "brand": "Dahua",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/DH-HAC-T1A51P.jpg/955138000036127238/400x400?storefront_domain=www.servius.in"
+    },
+    {
+        "name": "Dahua 4MP IP Bullet Camera DH-IPC-HFW14B0SP",
+        "price": 3100,
+        "description": "Dahua 4MP IP Bullet Camera DH-IPC-HFW14B0SP",
+        "sku": "DH-IPC-HFW14B0SP",
+        "category": "Cameras",
+        "brand": "Dahua",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/DH-IPC-HFW14B0SP.jpg/955138000036023413/400x400?storefront_domain=www.servius.in"
+    },
+    {
+        "name": "Prama 2MP HD Dome Camera PT-HTD70F0E-PF",
+        "price": 980,
+        "description": "Prama 2MP HD Dome Camera PT-HTD70F0E-PF",
+        "sku": "PT-HTD70F0E-PF",
+        "category": "Cameras",
+        "brand": "Prama",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/PT-HTD70F0E-PF.png/955138000036328733/400x400?storefront_domain=www.servius.in"
+    },
+    {
+        "name": "Prama 2MP HD Bullet Camera PT-HTD112E-ITPF",
+        "price": 1050,
+        "description": "Prama 2MP HD Bullet Camera PT-HTD112E-ITPF",
+        "sku": "PT-HTD112E-ITPF",
+        "category": "Cameras",
+        "brand": "Prama",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/PT-HTD112E-ITPF.png/955138000036328709/400x400?storefront_domain=www.servius.in"
+    },
+    {
+        "name": "Prama 2MP HD Dome Camera PT-HTD702E-ITPFS",
+        "price": 1250,
+        "description": "Prama 2MP HD Dome Camera PT-HTD702E-ITPFS (Audio)",
+        "sku": "PT-HTD702E-ITPFS",
+        "category": "Cameras",
+        "brand": "Prama",
+        "image_url": "https://cdn2.zohoecommerce.com/product-images/PT-HTD702E-ITPFS.png/955138000074910905/400x400?storefront_domain=www.servius.in"
+    }
+]
