@@ -1,4 +1,14 @@
 import React from 'react';
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Refund & Cancellation Policy | ShriVidhata",
+    description: "Read our refund and cancellation policy. We offer a 7-day return policy for eligible products.",
+    robots: {
+        index: false, // Usually policy pages are fine to index, but sometimes preferred to keep low priority
+        follow: true,
+    }
+};
 
 export default function RefundPolicy() {
     return (

@@ -7,6 +7,7 @@ export function LocalBusinessJsonLd() {
         "url": "https://shrividhata.com",
         "telephone": "+918989000247",
         "email": "contacts@shrividhata.com",
+        "priceRange": "₹₹",
         "address": {
             "@type": "PostalAddress",
             "streetAddress": "Shop No. 2, Near SBI Udawatganj, Mangalwariya",
@@ -17,9 +18,51 @@ export function LocalBusinessJsonLd() {
         },
         "geo": {
             "@type": "GeoCoordinates",
-            "latitude": 23.7082, // Approx for Narsinghgarh
+            "latitude": 23.7082,
             "longitude": 77.0963
         },
+        "areaServed": [
+            {
+                "@type": "City",
+                "name": "Narsinghgarh"
+            },
+            {
+                "@type": "City",
+                "name": "Bhopal"
+            },
+            {
+                "@type": "City",
+                "name": "Indore"
+            },
+            {
+                "@type": "City",
+                "name": "Rajgarh"
+            },
+            {
+                "@type": "City",
+                "name": "Biaora"
+            },
+            {
+                "@type": "City",
+                "name": "Sehore"
+            },
+            {
+                "@type": "City",
+                "name": "Shajapur"
+            },
+            {
+                "@type": "City",
+                "name": "Vidisha"
+            },
+            {
+                "@type": "City",
+                "name": "Ujjain"
+            },
+            {
+                "@type": "City",
+                "name": "Dewas"
+            }
+        ],
         "openingHoursSpecification": {
             "@type": "OpeningHoursSpecification",
             "dayOfWeek": [

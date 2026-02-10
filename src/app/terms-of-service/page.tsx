@@ -1,4 +1,10 @@
 import React from 'react';
+import { Metadata } from 'next';
+
+export const metadata: Metadata = {
+    title: "Terms of Service | ShriVidhata Security Solutions",
+    description: "Terms and conditions for using ShriVidhata website and services.",
+};
 
 export default function TermsOfService() {
     const companyName = "Shri Vidhata Creations Services (OPC) Pvt. Ltd.";

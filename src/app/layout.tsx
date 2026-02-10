@@ -18,31 +18,60 @@ export const metadata: Metadata = {
     default: "ShriVidhata | Best CCTV Camera Sales & Installation Services",
     template: "%s | ShriVidhata"
   },
-  description: "ShriVidhata offers premium CCTV camera sales, installation, and maintenance services in Narsinghgarh & Madhya Pradesh. Authorized dealers for Hikvision, CP Plus, Dahua.",
-  keywords: ["CCTV Camera", "Security Systems", "CCTV Installation", "Narsinghgarh", "Hikvision Dealer", "CP Plus Dealer", "Home Security", "Surveillance"],
+  description: "Premier CCTV camera, security systems, and fire alarm installation services in Narsinghgarh, Bhopal, Indore, Rajgarh, and across Madhya Pradesh. Authorized dealers for Hikvision, CP Plus, Dahua.",
+  keywords: [
+    "CCTV Camera", "Security Systems", "CCTV Installation",
+    "Narsinghgarh", "Bhopal", "Indore", "Rajgarh", "Biaora", "Sehore", "Shajapur", "Vidisha", "Ujjain", "Dewas",
+    "Hikvision Dealer", "CP Plus Dealer", "Home Security", "Surveillance", "Biometric Attendance", "Video Door Phone"
+  ],
+  authors: [{ name: "ShriVidhata Security Solutions" }],
+  creator: "ShriVidhata Security Solutions",
+  publisher: "ShriVidhata Security Solutions",
+  formatDetection: {
+    email: false,
+    address: false,
+    telephone: false,
+  },
   openGraph: {
     type: 'website',
     locale: 'en_IN',
     url: 'https://shrividhata.com',
+    title: "ShriVidhata | Premium Security & CCTV Solutions",
+    description: "Expert CCTV installation and security systems in Narsinghgarh, Bhopal, Indore & MP. Secure your world with our premium solutions.",
     siteName: 'ShriVidhata Security Solutions',
     images: [
       {
-        url: '/og-image.jpg', // We should ensure this exists or use a default
+        url: '/og-image.jpg',
         width: 1200,
         height: 630,
-        alt: 'ShriVidhata Security Solutions',
+        alt: 'ShriVidhata Security Solutions - Premium CCTV Services',
       },
     ],
   },
   twitter: {
     card: 'summary_large_image',
     title: "ShriVidhata | Security Solutions",
-    description: "Premium CCTV & Security Installation Services.",
+    description: "Premium CCTV & Security Installation Services in Madhya Pradesh.",
+    images: ['/og-image.jpg'],
   },
   icons: {
     icon: '/favicon.ico',
     apple: '/apple-touch-icon.png',
-  }
+  },
+  verification: {
+    google: "google-site-verification-code", // Placeholder - User to provide
+  },
+  robots: {
+    index: true,
+    follow: true,
+    googleBot: {
+      index: true,
+      follow: true,
+      'max-video-preview': -1,
+      'max-image-preview': 'large',
+      'max-snippet': -1,
+    },
+  },
 };
 
 import { Header } from "@/components/layout/Header";

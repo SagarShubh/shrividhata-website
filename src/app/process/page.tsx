@@ -56,6 +56,13 @@ const steps = [
     }
 ];
 
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Our Security Installation Process | ShriVidhata",
+    description: "From site survey to expert installation and training - discover how ShriVidhata ensures perfect security coverage for your premises.",
+};
+
 export default function ProcessPage() {
     return (
         <main className="min-h-screen bg-slate-50 dark:bg-black overflow-hidden pt-24 pb-20">

@@ -1,4 +1,10 @@
 import React from 'react';
+import { Metadata } from "next";
+
+export const metadata: Metadata = {
+    title: "Shipping Policy | ShriVidhata Security Solutions",
+    description: "Information about our shipping methods, costs, and delivery times for security products.",
+};
 
 export default function ShippingPolicy() {
     const companyName = "Shri Vidhata Creations Services (OPC) Pvt. Ltd.";
